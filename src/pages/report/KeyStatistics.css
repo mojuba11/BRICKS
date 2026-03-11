@@ -1,0 +1,14 @@
+.key-stats-container { padding: 20px; background-color: #f4f6f8; min-height: 100vh; }
+.stats-header { background: white; padding: 15px; border-radius: 4px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.query-group { display: flex; gap: 10px; }
+.query-btn { background: #009688; color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; }
+.stats-card { background: white; padding: 30px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.title { font-size: 24px; color: #333; font-weight: bold; }
+.custom-legend { display: flex; justify-content: center; gap: 20px; margin-bottom: 40px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #555; }
+.dot { width: 18px; height: 10px; border-radius: 2px; }
+.chart-wrapper { position: relative; }
+.x-axis-label { text-align: center; margin-top: 10px; color: #666; font-size: 14px; }
+.custom-tooltip { background: #5f9ea0; color: white; padding: 5px 12px; border-radius: 15px; font-weight: bold; position: relative; }
+.custom-tooltip::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #5f9ea0 transparent transparent transparent; }

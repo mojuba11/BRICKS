@@ -1,0 +1,29 @@
+.dl-query-container { padding: 10px; background-color: #f0f2f5; height: 100vh; }
+.dl-tabs { display: flex; background: white; border-bottom: 1px solid #ddd; margin-bottom: 10px; }
+.tab.active { padding: 10px 20px; font-size: 13px; color: #2563eb; border-bottom: 2px solid #2563eb; }
+
+.dl-content-card { background: white; padding: 20px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.dl-filter-bar { margin-bottom: 20px; }
+.input-group { display: flex; gap: 10px; }
+.dl-input { border: 1px solid #dcdfe6; padding: 8px; border-radius: 4px; width: 180px; }
+.dl-query-btn { background-color: #009688; color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+
+/* Table Styling */
+.dl-table-wrapper { border: 1px solid #ebeef5; border-radius: 4px; overflow: hidden; }
+.dl-vms-table { width: 100%; border-collapse: collapse; }
+.dl-vms-table th { background-color: #f8f9fa; color: #666; text-align: left; padding: 12px; font-size: 13px; border-bottom: 1px solid #ebeef5; }
+.dl-vms-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; font-size: 13px; color: #444; }
+
+/* Preview & Play Logic */
+.preview-container { position: relative; width: 100px; height: 60px; cursor: pointer; border-radius: 4px; overflow: hidden; }
+.dl-thumb { width: 100%; height: 100%; object-fit: cover; }
+.play-hint { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); color: white; display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
+.preview-container:hover .play-hint { opacity: 1; }
+
+.dl-tag { background: #409eff; color: white; padding: 2px 6px; border-radius: 3px; font-size: 11px; }
+
+/* Modal Player */
+.video-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.video-container { position: relative; width: 70%; background: black; border-radius: 8px; }
+.video-element { width: 100%; border-radius: 8px; }
+.close-btn { position: absolute; top: -35px; right: 0; background: none; border: none; color: white; font-size: 20px; cursor: pointer; }

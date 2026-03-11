@@ -1,0 +1,110 @@
+.fence-page-container {
+  padding: 10px;
+  background-color: #f0f2f5;
+  height: 100%;
+}
+
+.fence-tabs {
+  display: flex;
+  background: white;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 10px;
+}
+
+.tab.active {
+  padding: 10px 20px;
+  font-size: 13px;
+  color: #2563eb;
+  border-bottom: 2px solid #2563eb;
+  background: #f9f9f9;
+  cursor: pointer;
+}
+
+.fence-content-card {
+  background: white;
+  padding: 20px;
+  border-radius: 4px;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.fence-input {
+  border: 1px solid #dcdfe6;
+  padding: 8px 12px;
+  border-radius: 4px;
+  width: 180px;
+}
+
+.fence-query-button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 0 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.fence-table-container {
+  border: 1px solid #ebeef5;
+}
+
+.fence-data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.fence-data-table th {
+  background-color: #f8f9fa;
+  color: #606266;
+  text-align: left;
+  padding: 12px;
+  font-size: 13px;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.fence-data-table td {
+  padding: 12px;
+  border-bottom: 1px solid #ebeef5;
+  color: #606266;
+  font-size: 13px;
+}
+
+/* Status Pills */
+.status-pill {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.status-pill.enter {
+  background-color: #e1f5fe;
+  color: #0288d1;
+}
+
+.status-pill.exit {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+
+.page-num.active {
+  background: #2563eb;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 2px;
+}
+
+.page-btn, .confirm-btn {
+  border: 1px solid #ddd;
+  background: white;
+  padding: 4px 10px;
+  cursor: pointer;
+}

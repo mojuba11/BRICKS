@@ -1,0 +1,107 @@
+.sos-page-container {
+  padding: 10px;
+  background-color: #f0f2f5;
+  height: 100%;
+}
+
+.sos-tabs {
+  display: flex;
+  background: white;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 10px;
+}
+
+.tab {
+  padding: 10px 20px;
+  font-size: 13px;
+  color: #666;
+  cursor: pointer;
+}
+
+.tab.active {
+  color: #2563eb; /* Blue text for active tab */
+  border-bottom: 2px solid #2563eb;
+  background: #f9f9f9;
+}
+
+.sos-content-card {
+  background: white;
+  padding: 20px;
+  border-radius: 4px;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.sos-input {
+  border: 1px solid #dcdfe6;
+  padding: 8px 12px;
+  border-radius: 4px;
+  width: 180px;
+}
+
+.sos-query-button {
+  background-color: #2563eb; /* Blue background */
+  color: white;
+  border: none;
+  padding: 0 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.sos-query-button:hover {
+  background-color: #1d4ed8;
+}
+
+.sos-table-container {
+  border: 1px solid #ebeef5;
+}
+
+.sos-data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.sos-data-table th {
+  background-color: #f8f9fa;
+  color: #606266;
+  text-align: left;
+  padding: 12px;
+  font-size: 13px;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.sos-data-table td {
+  padding: 12px;
+  border-bottom: 1px solid #ebeef5;
+  color: #606266;
+  font-size: 13px;
+}
+
+/* Pagination blue styling */
+.page-num.active {
+  background: #2563eb;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 2px;
+}
+
+.page-btn, .confirm-btn {
+  border: 1px solid #ddd;
+  background: white;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.page-select {
+  padding: 4px;
+  border: 1px solid #ddd;
+}

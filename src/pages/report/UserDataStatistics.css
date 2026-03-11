@@ -1,0 +1,94 @@
+.stats-container {
+  padding: 20px;
+  background-color: #f4f6f8;
+  min-height: 100vh;
+}
+
+.filter-section {
+  background: white;
+  padding: 20px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.input-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.input-row input, .input-row select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-width: 180px;
+  color: #666;
+  outline: none;
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+}
+
+.query-btn {
+  background-color: #009688;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.export-btn {
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.table-wrapper {
+  background: white;
+  border-radius: 4px;
+  overflow-x: auto;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th {
+  background-color: #f8f9fa;
+  padding: 12px;
+  text-align: left;
+  color: #888;
+  border-bottom: 2px solid #eee;
+  white-space: nowrap;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.no-data-cell {
+  text-align: center;
+  padding: 40px !important;
+  color: #999;
+  font-style: italic;
+}
+
+.save-badge {
+  background-color: #2196f3;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
