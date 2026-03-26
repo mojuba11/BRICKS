@@ -1,43 +1,53 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUser, FaLock, FaGlobe } from "react-icons/fa";
+import { FaUser, FaLock } from "react-icons/fa";
 import "./Login.css";
 
 const Login = ({ setAuth }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // New: Loading state
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Get the URL from your Vercel Environment Variables
-  const API_URL = import.meta.env.VITE_API_BASE_URL || "https://bricks-backend-7wnv.onrender.com";
+  // Backend URL (from Vercel env or fallback)
+  const API_URL =
+    import.meta.env.VITE_API_BASE_URL ||
+    "https://bricks-backend-7wnv.onrender.com";
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/api/login`, {
+      const response = await fetch(`${API_URL}/api/users/login`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: username, // map username → email
+          password,
+        }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Successful login
+        // ✅ Save auth state
         localStorage.setItem("isAuthenticated", "true");
-        localStorage.setItem("token", data.token); // Store your JWT if you have one
+
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+        }
+
         setAuth(true);
         navigate("/map");
       } else {
-        // Error from backend (e.g., wrong password)
         alert(data.message || "Invalid credentials");
       }
     } catch (error) {
       console.error("Login Error:", error);
-      alert("Server is waking up or unreachable. Please try again in 30 seconds.");
+      alert("Server is waking up or unreachable. Please try again shortly.");
     } finally {
       setIsLoading(false);
     }
@@ -53,8 +63,31 @@ const Login = ({ setAuth }) => {
         </div>
 
         <form onSubmit={handleLogin} className="login-form">
-          {/* ... User and Password Inputs stay the same ... */}
-          
+          {/* Username / Email */}
+          <div className="input-group">
+            <FaUser className="input-icon" />
+            <input
+              type="text"
+              placeholder="Email"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Password */}
+          <div className="input-group">
+            <FaLock className="input-icon" />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Submit */}
           <button type="submit" className="login-btn" disabled={isLoading}>
             {isLoading ? "AUTHENTICATING..." : "LOGIN"}
           </button>
