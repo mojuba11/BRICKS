@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Routes, Route, NavLink } from "react-router-dom";
+import { Routes, Route, NavLink, Navigate } from "react-router-dom";
 import {
   FaChevronDown,
   FaChevronUp,
@@ -44,19 +44,21 @@ import FenceManagement from "./pages/system/FenceManagement";
 function App() {
   const [openMenu, setOpenMenu] = useState(null);
 
-  /* LOGIN STATE */
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    localStorage.getItem("isAuthenticated") === "true"
-  );
+  /* ✅ AUTHENTICATION BYPASS */
+  // Forced to true so the login screen is skipped
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   const toggleMenu = (menu) => {
     setOpenMenu(openMenu === menu ? null : menu);
   };
 
-  /* IF NOT LOGGED IN */
+  /* ✅ LOGIN GUARD REMOVED */
+  // If you ever want to turn login back on, just uncomment this:
+  /*
   if (!isAuthenticated) {
     return <Login setAuth={setIsAuthenticated} />;
   }
+  */
 
   return (
     <div className="layout">
@@ -202,6 +204,9 @@ function App() {
         </div>
 
         <Routes>
+          {/* ✅ 1. BASE ROUTE - Redirects the main URL to the Map */}
+          <Route path="/" element={<Navigate to="/map" replace />} />
+
           <Route path="/map" element={<RealTimeMap />} />
           <Route path="/live-video" element={<LiveVideo />} />
           <Route path="/sos-query" element={<SOSQuery />} />
@@ -221,6 +226,9 @@ function App() {
           <Route path="/device-management" element={<DeviceManagement />} />
           <Route path="/intercom-group" element={<IntercomGroup />} />
           <Route path="/fence-management" element={<FenceManagement />} />
+
+          {/* ✅ 2. CATCH-ALL ROUTE - If URL is wrong, go back to Map */}
+          <Route path="*" element={<Navigate to="/map" replace />} />
         </Routes>
 
       </div>
