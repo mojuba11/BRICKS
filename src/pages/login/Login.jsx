@@ -10,7 +10,7 @@ const Login = ({ setAuth }) => {
   const navigate = useNavigate();
 
   // Get the URL from your Vercel Environment Variables
-  const API_URL = import.meta.env.VITE_API_BASE_URL || "https://bricks-backend-7wnv.onrender.com/";
+  const API_URL = import.meta.env.VITE_API_BASE_URL || "https://bricks-backend-7wnv.onrender.com";
 
   const handleLogin = async (e) => {
     e.preventDefault();
