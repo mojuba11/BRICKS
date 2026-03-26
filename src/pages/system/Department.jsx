@@ -8,7 +8,7 @@ function Department() {
   const [loading, setLoading] = useState(true);
 
   // ✅ LIVE BACKEND
-  const API_BASE = "https://bricks-backend-7wnv.onrender.com/api/departments";
+  const API_BASE =process.env.REACT_APP_API_URL || "https://bricks-backend-7wnv.onrender.com/api/departments";
 
   const [form, setForm] = useState({ 
     name: "", 
