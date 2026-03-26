@@ -9,45 +9,48 @@ const Login = ({ setAuth }) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Backend URL (from Vercel env or fallback)
-  const API_URL =
-    import.meta.env.VITE_API_BASE_URL ||
-    "https://bricks-backend-7wnv.onrender.com";
+  // ✅ Cleanly handle the API URL to avoid double slashes //
+  const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || "https://bricks-backend-7wnv.onrender.com";
+  const API_URL = rawBaseUrl.endsWith("/") ? rawBaseUrl.slice(0, -1) : rawBaseUrl;
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
+      // ✅ Using the specific endpoint from your backend
       const response = await fetch(`${API_URL}/api/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: username, // map username → email
-          password,
+          email: username, // Mapping your input 'username' to the backend 'email'
+          password: password,
         }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // ✅ Save auth state
+        // ✅ 1. Update browser storage
         localStorage.setItem("isAuthenticated", "true");
-
         if (data.token) {
           localStorage.setItem("token", data.token);
         }
 
+        // ✅ 2. Update App.js state
         setAuth(true);
+
+        // ✅ 3. Move to the map
         navigate("/map");
       } else {
-        alert(data.message || "Invalid credentials");
+        // Handle backend errors (401 Unauthorized, etc)
+        alert(data.message || "Invalid email or password.");
       }
     } catch (error) {
-      console.error("Login Error:", error);
-      alert("Server is waking up or unreachable. Please try again shortly.");
+      console.error("Login Connection Error:", error);
+      alert("Cannot reach the server. It may be waking up (Render Free Tier). Please wait 30 seconds and try again.");
     } finally {
       setIsLoading(false);
     }
@@ -63,7 +66,6 @@ const Login = ({ setAuth }) => {
         </div>
 
         <form onSubmit={handleLogin} className="login-form">
-          {/* Username / Email */}
           <div className="input-group">
             <FaUser className="input-icon" />
             <input
@@ -75,7 +77,6 @@ const Login = ({ setAuth }) => {
             />
           </div>
 
-          {/* Password */}
           <div className="input-group">
             <FaLock className="input-icon" />
             <input
@@ -87,7 +88,6 @@ const Login = ({ setAuth }) => {
             />
           </div>
 
-          {/* Submit */}
           <button type="submit" className="login-btn" disabled={isLoading}>
             {isLoading ? "AUTHENTICATING..." : "LOGIN"}
           </button>
