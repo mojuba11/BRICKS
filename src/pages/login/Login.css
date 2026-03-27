@@ -48,20 +48,21 @@
   margin-top: 8px;
 }
 
-/* --- ADJUSTED INPUT GROUPS --- */
+/* --- BORDERLESS INPUT GROUPS --- */
 .input-group {
   display: flex;
   align-items: center;
-  background: #faf8f6;
+  background: #faf8f6; /* Keep background to define the field */
   margin-bottom: 20px;
-  padding: 12px 20px; /* Increased side padding since icons are gone */
+  padding: 14px 20px;
   border-radius: 8px;
-  border: 1px solid #dcd3cb;
-  transition: border-color 0.3s ease;
+  border: none; /* ✅ Border Removed */
+  transition: background 0.3s ease;
 }
 
+/* ✅ Subtle background shift instead of a border color change */
 .input-group:focus-within {
-  border-color: #C19A6B;
+  background: #f1ede9; 
 }
 
 .input-group input {
