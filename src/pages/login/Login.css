@@ -1,23 +1,147 @@
-/* ✅ Success Message Overlay */
+/* --- PAGE BACKGROUND --- */
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f1ee; /* Soft cream background */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* --- THE LOGIN CARD --- */
+.login-box {
+  position: relative; /* ✅ Required for the success overlay */
+  background: #ffffff;
+  padding: 50px 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  width: 380px;
+  text-align: center;
+  border: 1px solid #e1dcd9;
+  overflow: hidden; /* Keeps overlay within rounded corners */
+}
+
+/* --- LOGO & HEADER --- */
+.logo-circle {
+  width: 60px;
+  height: 60px;
+  background: #C19A6B; /* ✅ Light Brown Theme Color */
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0 auto 15px;
+}
+
+.login-header h2 {
+  color: #5d4a37; /* Darker brown for contrast */
+  font-size: 1.6rem;
+  margin: 0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  color: #8e7e6f;
+  font-size: 0.85rem;
+  margin-top: 8px;
+}
+
+/* --- INPUT FIELDS --- */
+.input-group {
+  display: flex;
+  align-items: center;
+  background: #faf8f6;
+  margin-bottom: 20px;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid #dcd3cb;
+  transition: border-color 0.3s ease;
+}
+
+.input-group:focus-within {
+  border-color: #C19A6B;
+}
+
+.input-icon {
+  color: #C19A6B; /* ✅ Light Brown Icons */
+  font-size: 1.1rem;
+}
+
+.input-group input {
+  background: transparent;
+  border: none;
+  color: #5d4a37;
+  margin-left: 12px;
+  width: 100%;
+  outline: none;
+  font-size: 1rem;
+}
+
+/* --- PASSWORD SHOW/HIDE TOGGLE --- */
+.password-toggle {
+  color: #C19A6B;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  font-size: 1.1rem;
+}
+
+.password-toggle:hover {
+  color: #a6835a;
+}
+
+/* --- LOGIN BUTTON --- */
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background: #C19A6B; /* ✅ Light Brown Button */
+  border: none;
+  color: white;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.1s ease;
+}
+
+.login-btn:hover {
+  background: #a6835a; /* Slightly darker brown on hover */
+}
+
+.login-btn:active {
+  transform: scale(0.98);
+}
+
+.login-btn:disabled {
+  background: #dcd3cb;
+  cursor: not-allowed;
+}
+
+/* --- SUCCESS OVERLAY --- */
 .success-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.98);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: 12px;
   z-index: 10;
-  animation: fadeIn 0.3s ease-in-out;
+  animation: fadeIn 0.4s ease-out forwards;
 }
 
 .success-overlay h3 {
   color: #5d4a37;
   margin-top: 15px;
+  font-size: 1.4rem;
 }
 
 .success-overlay p {
@@ -26,20 +150,14 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.9); }
+  from { opacity: 0; transform: scale(1.05); }
   to { opacity: 1; transform: scale(1); }
 }
 
-/* Ensure the login-box is the anchor for the overlay */
-.login-box {
-  position: relative; /* Added this */
-  background: #ffffff;
-  padding: 50px 40px;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-  width: 380px;
-  text-align: center;
-  border: 1px solid #e1dcd9;
+/* --- FOOTER --- */
+.login-footer {
+  margin-top: 30px;
+  font-size: 11px;
+  color: #b0a498;
+  letter-spacing: 0.5px;
 }
-
-/* ... Keep all your Light Brown button/icon styles from the previous step ... */
