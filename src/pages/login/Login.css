@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #1a1a1a; /* Dark background */
+  background-color: #1a1a1a; 
   color: white;
   font-family: Arial, sans-serif;
 }
@@ -15,7 +15,6 @@
   letter-spacing: 2px;
 }
 
-/* Form styling */
 .login-page form {
   background: #2a2a2a;
   padding: 40px;
@@ -24,7 +23,6 @@
   width: 300px;
 }
 
-/* Grouping Icon + Input */
 .input-group {
   display: flex;
   align-items: center;
@@ -43,7 +41,6 @@
   width: 100%;
 }
 
-/* Button styling */
 .login-page button {
   width: 100%;
   padding: 12px;
@@ -60,22 +57,67 @@
   background-color: #0056b3;
 }
 
-.login-page button:disabled {
-  background-color: #555;
-  cursor: not-allowed;
+/* --- THEME TOGGLE BUTTON STYLING --- */
+.theme-toggle-btn {
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.theme-toggle-btn:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
 }
 
 /* --- DASHBOARD DARK THEME OVERRIDES --- */
+/* This kicks in when <div className="layout dark"> */
 .dark {
-  background: #111;
-  color: white;
+  background: #111 !important;
+  color: white !important;
+}
+
+.dark .sidebar {
+  background: #000;
+  border-right: 1px solid #333;
 }
 
 .dark .main {
   background: #181818;
 }
 
+.dark .topbar {
+  background: #222;
+  border-bottom: 1px solid #333;
+}
+
+.dark .submenu-link {
+  color: #bbb;
+}
+
+.dark .submenu-link:hover, .dark .submenu-link.active {
+  background: #333;
+  color: #fff;
+}
+
 .dark .kpi-card {
   background: #222;
   color: white;
+  border: 1px solid #444;
+}
+
+/* --- LIGHT MODE (Default fallback) --- */
+.layout:not(.dark) {
+  background: #f8f9fa;
+  color: #333;
+}
+
+.layout:not(.dark) .sidebar {
+  background: #ffffff;
+  color: #333;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.layout:not(.dark) .main {
+  background: #f0f2f5;
 }
