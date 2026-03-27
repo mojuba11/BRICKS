@@ -48,7 +48,7 @@ const Login = ({ setAuth }) => {
 
   return (
     <div className="login-page"> {/* Kept your original class */}
-      <h2>BRICKS BODYCAM LOGIN</h2>
+      <h2>BRICKS BODYCAM</h2>
       
       <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         <div className="input-group">

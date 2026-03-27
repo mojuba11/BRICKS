@@ -1,4 +1,4 @@
-/* Container to center everything on the screen */
+/* --- LOGIN PAGE STYLES --- */
 .login-page {
   display: flex;
   flex-direction: column;
@@ -63,4 +63,19 @@
 .login-page button:disabled {
   background-color: #555;
   cursor: not-allowed;
+}
+
+/* --- DASHBOARD DARK THEME OVERRIDES --- */
+.dark {
+  background: #111;
+  color: white;
+}
+
+.dark .main {
+  background: #181818;
+}
+
+.dark .kpi-card {
+  background: #222;
+  color: white;
 }
