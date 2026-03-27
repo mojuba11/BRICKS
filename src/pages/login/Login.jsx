@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUser, FaLock, FaEye, FaEyeSlash, FaCheckCircle } from "react-icons/fa"; // Added CheckCircle
+import { FaEye, FaEyeSlash, FaCheckCircle } from "react-icons/fa"; 
 import "./Login.css";
 
 const Login = ({ setAuth }) => {
@@ -8,7 +8,7 @@ const Login = ({ setAuth }) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [loginSuccess, setLoginSuccess] = useState(false); // ✅ New state for success message
+  const [loginSuccess, setLoginSuccess] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -33,16 +33,11 @@ const Login = ({ setAuth }) => {
       if (response.ok) {
         localStorage.setItem("isAuthenticated", "true");
         if (data.token) localStorage.setItem("token", data.token);
-        
-        // ✅ Show Success Message
         setLoginSuccess(true);
-
-        // ✅ Wait 1.5 seconds then redirect
         setTimeout(() => {
           setAuth(true);
           navigate("/map");
         }, 1500);
-
       } else {
         alert(data.message || "Invalid username or password.");
         setIsLoading(false);
@@ -57,8 +52,6 @@ const Login = ({ setAuth }) => {
   return (
     <div className="login-page">
       <div className="login-box">
-        
-        {/* Success Overlay */}
         {loginSuccess && (
           <div className="success-overlay">
             <FaCheckCircle size={50} color="#C19A6B" />
@@ -77,7 +70,6 @@ const Login = ({ setAuth }) => {
 
         <form onSubmit={handleLogin} className="login-form">
           <div className="input-group">
-            <FaUser className="input-icon" />
             <input
               type="text"
               placeholder="Username"
@@ -88,7 +80,6 @@ const Login = ({ setAuth }) => {
           </div>
 
           <div className="input-group">
-            <FaLock className="input-icon" />
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
