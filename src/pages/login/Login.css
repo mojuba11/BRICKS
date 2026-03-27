@@ -48,21 +48,22 @@
   margin-top: 8px;
 }
 
-/* --- BORDERLESS INPUT GROUPS --- */
+/* --- TRANSPARENT UNDERLINED INPUTS --- */
 .input-group {
   display: flex;
   align-items: center;
-  background: #faf8f6; /* Keep background to define the field */
-  margin-bottom: 20px;
-  padding: 14px 20px;
-  border-radius: 8px;
-  border: none; /* ✅ Border Removed */
-  transition: background 0.3s ease;
+  background: transparent; /* ✅ Background Removed */
+  margin-bottom: 25px; /* Increased margin for better spacing */
+  padding: 10px 0; /* Padding adjusted for underline look */
+  border-radius: 0; /* Removed rounding for straight underline */
+  border: none;
+  border-bottom: 1px solid #dcd3cb; /* ✅ Subtle bottom line only */
+  transition: border-bottom-color 0.3s ease;
 }
 
-/* ✅ Subtle background shift instead of a border color change */
+/* ✅ Underline changes color when typing */
 .input-group:focus-within {
-  background: #f1ede9; 
+  border-bottom: 2px solid #C19A6B; 
 }
 
 .input-group input {
@@ -72,6 +73,12 @@
   width: 100%;
   outline: none;
   font-size: 1rem;
+  padding: 5px 0;
+}
+
+/* Optional: Adjust placeholder color for the light background */
+.input-group input::placeholder {
+  color: #b0a498;
 }
 
 .password-toggle {
@@ -82,6 +89,7 @@
   padding-left: 10px;
 }
 
+/* --- BUTTON --- */
 .login-btn {
   width: 100%;
   padding: 14px;
@@ -92,6 +100,7 @@
   font-weight: bold;
   font-size: 1rem;
   cursor: pointer;
+  margin-top: 10px;
   transition: background 0.3s ease;
 }
 
@@ -99,6 +108,7 @@
   background: #a6835a;
 }
 
+/* --- SUCCESS OVERLAY --- */
 .success-overlay {
   position: absolute;
   top: 0;
