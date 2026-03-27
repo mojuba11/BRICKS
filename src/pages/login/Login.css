@@ -1,79 +1,66 @@
-.login-wrapper {
-  height: 100vh;
-  width: 100vw;
+/* Container to center everything on the screen */
+.login-page {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  background: #1a1a2e; /* Dark professional background */
-  background-image: radial-gradient(circle at center, #16213e 0%, #0f3460 100%);
+  justify-content: center;
+  height: 100vh;
+  background-color: #1a1a1a; /* Dark background */
+  color: white;
+  font-family: Arial, sans-serif;
 }
 
-.login-box {
-  background: #ffffff;
+.login-page h2 {
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+}
+
+/* Form styling */
+.login-page form {
+  background: #2a2a2a;
   padding: 40px;
   border-radius: 8px;
-  width: 380px;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  width: 300px;
 }
 
-.login-logo .logo-circle {
-  width: 60px;
-  height: 60px;
-  background: #e94560;
-  color: white;
-  font-size: 32px;
-  font-weight: bold;
-  line-height: 60px;
-  border-radius: 50%;
-  margin: 0 auto 15px;
-}
-
-.login-logo h2 { margin: 0; color: #1a1a2e; letter-spacing: 2px; }
-.login-logo p { color: #888; font-size: 12px; margin-bottom: 30px; }
-
-.input-container {
-  position: relative;
-  margin-bottom: 20px;
-}
-
-.input-icon {
-  position: absolute;
-  left: 12px;
-  top: 12px;
-  color: #ccc;
-}
-
-.input-container input {
-  width: 100%;
-  padding: 12px 12px 12px 40px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
-  outline: none;
-}
-
-.form-options {
+/* Grouping Icon + Input */
+.input-group {
   display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: #666;
-  margin-bottom: 25px;
+  align-items: center;
+  background: #333;
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 4px;
 }
 
-.lang-select { display: flex; align-items: center; gap: 5px; cursor: pointer; }
+.input-group input {
+  background: transparent;
+  border: none;
+  color: white;
+  margin-left: 10px;
+  outline: none;
+  width: 100%;
+}
 
-.login-btn {
+/* Button styling */
+.login-page button {
   width: 100%;
   padding: 12px;
-  background: #0f3460;
-  color: white;
+  background-color: #007bff;
   border: none;
   border-radius: 4px;
+  color: white;
   font-weight: bold;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background 0.3s;
 }
 
-.login-btn:hover { background: #e94560; }
-.login-footer { margin-top: 30px; font-size: 10px; color: #bbb; }
+.login-page button:hover {
+  background-color: #0056b3;
+}
+
+.login-page button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
