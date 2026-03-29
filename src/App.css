@@ -1,0 +1,63 @@
+/* Sidebar Overrides */
+.sidebar {
+  background-color: #1a1a1a !important;
+  color: white;
+}
+
+.menu-title-link {
+  text-decoration: none;
+  color: white;
+  display: block;
+  padding: 15px 20px;
+  font-weight: bold;
+}
+
+.menu-single {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Force Bronze on Active Submenu Links */
+.submenu-link {
+  text-decoration: none;
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 25px;
+  font-size: 13px;
+  transition: 0.3s;
+}
+
+.submenu-link:hover {
+  background: #252525;
+  color: #fff;
+}
+
+/* THE THEME BUTTONS */
+.theme-toggle-btn-tactical, .logout-btn-tactical {
+  width: 90%;
+  margin: 5px 5%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.theme-toggle-btn-tactical {
+  background-color: #333;
+  color: #c2a078;
+  border: 1px solid #c2a078;
+}
+
+.logout-btn-tactical {
+  background-color: #c2a078;
+  color: #fff;
+}
+
+.logout-btn-tactical:hover {
+  background-color: #ab8b64;
+}

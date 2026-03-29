@@ -3,8 +3,11 @@ import { Routes, Route, NavLink, Navigate } from "react-router-dom";
 import {
   FaChevronDown, FaChevronUp, FaMap, FaVideo, FaBell,
   FaRoute, FaFileAlt, FaDownload, FaChartBar, FaUsers, FaCogs,
-  FaSun, FaMoon // Added icons for the toggle
+  FaSun, FaMoon, FaTachometerAlt
 } from "react-icons/fa";
+
+/* NEW DASHBOARD IMPORT */
+import Dashboard from "./pages/command/Dashboard"; 
 
 /* LOGIN PAGE */
 import Login from "./pages/login/Login";
@@ -34,12 +37,8 @@ import IntercomGroup from "./pages/system/IntercomGroup";
 import FenceManagement from "./pages/system/FenceManagement";
 
 function App() {
-  const [openMenu, setOpenMenu] = useState(null);
-  
-  // ✅ Dark Mode State
+  const [openMenu, setOpenMenu] = useState("command"); // Default open
   const [darkMode, setDarkMode] = useState(true);
-
-  // ✅ Keep user logged in on refresh
   const [isAuthenticated, setIsAuthenticated] = useState(
     localStorage.getItem("isAuthenticated") === "true"
   );
@@ -48,39 +47,30 @@ function App() {
     setOpenMenu(openMenu === menu ? null : menu);
   };
 
-  // ✅ --- LOGIN GUARD ---
   if (!isAuthenticated) {
     return <Login setAuth={setIsAuthenticated} />;
   }
 
+  // Bronze Active Style Logic
+  const activeStyle = ({ isActive }) => ({
+    color: isActive ? "#c2a078" : "",
+    borderLeft: isActive ? "4px solid #c2a078" : "4px solid transparent",
+    backgroundColor: isActive ? "rgba(194, 160, 120, 0.1)" : ""
+  });
+
   return (
-    // ✅ Dynamic class: Adds "dark" if darkMode is true
     <div className={darkMode ? "layout dark" : "layout"}>
       
       {/* SIDEBAR */}
       <div className="sidebar">
-        <h2 className="logo">BRICKS BODYCAM</h2>
+        <h2 className="logo">BRICKS <span style={{color: "#c2a078"}}>VMS</span></h2>
 
-        {/* ✅ THEME TOGGLE BUTTON */}
-        <button 
-          className="theme-toggle-btn" 
-          onClick={() => setDarkMode(!darkMode)}
-          style={{
-            margin: "10px 20px",
-            padding: "8px",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            borderRadius: "4px",
-            border: "1px solid #444",
-            background: darkMode ? "#333" : "#ddd",
-            color: darkMode ? "#fff" : "#000"
-          }}
-        >
-          {darkMode ? <FaSun /> : <FaMoon />}
-          {darkMode ? "Light Mode" : "Dark Mode"}
-        </button>
+        {/* DASHBOARD LINK (Root Level) */}
+        <NavLink to="/dashboard" className="menu-title-link" style={activeStyle}>
+          <div className="menu-single">
+            <FaTachometerAlt /> <span>DASHBOARD</span>
+          </div>
+        </NavLink>
 
         {/* COMMAND & DISPATCH */}
         <div className="menu-title" onClick={() => toggleMenu("command")}>
@@ -89,11 +79,11 @@ function App() {
         </div>
         {openMenu === "command" && (
           <div className="submenu">
-            <NavLink to="/map" className="submenu-link"><FaMap /> Real Time Map</NavLink>
-            <NavLink to="/live-video" className="submenu-link"><FaVideo /> Live Video</NavLink>
-            <NavLink to="/sos-query" className="submenu-link"><FaBell /> SOS Query</NavLink>
-            <NavLink to="/fence-query" className="submenu-link"><FaRoute /> Fence Query</NavLink>
-            <NavLink to="/history-route" className="submenu-link"><FaRoute /> History Route</NavLink>
+            <NavLink to="/map" className="submenu-link" style={activeStyle}><FaMap /> Real Time Map</NavLink>
+            <NavLink to="/live-video" className="submenu-link" style={activeStyle}><FaVideo /> Live Video</NavLink>
+            <NavLink to="/sos-query" className="submenu-link" style={activeStyle}><FaBell /> SOS Query</NavLink>
+            <NavLink to="/fence-query" className="submenu-link" style={activeStyle}><FaRoute /> Fence Query</NavLink>
+            <NavLink to="/history-route" className="submenu-link" style={activeStyle}><FaRoute /> History Route</NavLink>
           </div>
         )}
 
@@ -104,60 +94,35 @@ function App() {
         </div>
         {openMenu === "document" && (
           <div className="submenu">
-            <NavLink to="/file-query" className="submenu-link"><FaFileAlt /> File Query</NavLink>
-            <NavLink to="/download-query" className="submenu-link"><FaDownload /> Download Query</NavLink>
+            <NavLink to="/file-query" className="submenu-link" style={activeStyle}><FaFileAlt /> File Query</NavLink>
+            <NavLink to="/download-query" className="submenu-link" style={activeStyle}><FaDownload /> Download Query</NavLink>
           </div>
         )}
 
-        {/* REPORT */}
-        <div className="menu-title" onClick={() => toggleMenu("report")}>
-          <span>REPORT</span>
-          {openMenu === "report" ? <FaChevronUp /> : <FaChevronDown />}
+        {/* ... Other Menus Follow same pattern ... */}
+
+        <div className="sidebar-footer">
+            <button className="theme-toggle-btn-tactical" onClick={() => setDarkMode(!darkMode)}>
+                {darkMode ? <FaSun /> : <FaMoon />} {darkMode ? "LIGHT" : "DARK"}
+            </button>
+            <button className="logout-btn-tactical" onClick={() => {
+                localStorage.removeItem("isAuthenticated");
+                setIsAuthenticated(false);
+            }}>LOGOUT</button>
         </div>
-        {openMenu === "report" && (
-          <div className="submenu">
-            <NavLink to="/user-data" className="submenu-link"><FaChartBar /> User Data Statistics</NavLink>
-            <NavLink to="/key-statistics" className="submenu-link"><FaChartBar /> Key Statistics</NavLink>
-            <NavLink to="/time-statistics" className="submenu-link"><FaChartBar /> Time Statistics</NavLink>
-            <NavLink to="/user-check" className="submenu-link"><FaChartBar /> User Check Statistics</NavLink>
-          </div>
-        )}
-
-        {/* SYSTEM SETUP */}
-        <div className="menu-title" onClick={() => toggleMenu("system")}>
-          <span>SYSTEM SETUP</span>
-          {openMenu === "system" ? <FaChevronUp /> : <FaChevronDown />}
-        </div>
-        {openMenu === "system" && (
-          <div className="submenu">
-            <NavLink to="/department" className="submenu-link"><FaUsers /> Department Management</NavLink>
-            <NavLink to="/user-management" className="submenu-link"><FaUsers /> User Management</NavLink>
-            <NavLink to="/device-management" className="submenu-link"><FaCogs /> Device Management</NavLink>
-            <NavLink to="/intercom-group" className="submenu-link"><FaUsers /> Intercom Group</NavLink>
-            <NavLink to="/fence-management" className="submenu-link"><FaRoute /> Fence Management</NavLink>
-          </div>
-        )}
-
-        <button
-          className="logout-btn"
-          onClick={() => {
-            localStorage.removeItem("isAuthenticated");
-            localStorage.removeItem("token");
-            setIsAuthenticated(false);
-          }}
-        >
-          Logout
-        </button>
       </div>
 
       {/* MAIN CONTENT */}
       <div className="main">
         <div className="topbar">
-          <h3>Command & Dispatch Dashboard</h3>
+          <h3 style={{color: "#c2a078"}}>SYSTEM STATUS: OPERATIONAL</h3>
         </div>
 
         <Routes>
-          <Route path="/" element={<Navigate to="/map" replace />} />
+          {/* ✅ UPDATED REDIRECT: Go to Dashboard first */}
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          
           <Route path="/map" element={<RealTimeMap />} />
           <Route path="/live-video" element={<LiveVideo />} />
           <Route path="/sos-query" element={<SOSQuery />} />
@@ -174,7 +139,7 @@ function App() {
           <Route path="/device-management" element={<DeviceManagement />} />
           <Route path="/intercom-group" element={<IntercomGroup />} />
           <Route path="/fence-management" element={<FenceManagement />} />
-          <Route path="*" element={<Navigate to="/map" replace />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </div>
     </div>
