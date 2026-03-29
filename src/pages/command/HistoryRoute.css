@@ -1,62 +1,85 @@
 .history-page-container {
+  padding: 15px;
+  background-color: #f4f4f4;
+  height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 80px); /* Adjust based on your topbar */
-  background-color: #f0f2f5;
-  padding: 10px;
 }
 
-.history-tabs {
-  display: flex;
-  background: white;
-  border-bottom: 1px solid #ddd;
-  margin-bottom: 10px;
-}
-
-.tab.active {
+.history-tabs .tab {
   padding: 10px 20px;
+  background: #e0e0e0;
+  border: 1px solid #ccc;
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
   font-size: 13px;
-  color: #2563eb;
-  border-bottom: 2px solid #2563eb;
-  background: #f9f9f9;
+  color: #666;
+  display: inline-flex;
+  align-items: center;
 }
 
+.history-tabs .tab.active {
+  background: #fff;
+  border-top: 3px solid #c2a078;
+  color: #c2a078;
+  font-weight: bold;
+}
+
+/* LAYOUT */
 .history-layout {
   display: flex;
   flex: 1;
-  gap: 10px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 0 4px 4px 4px;
+  overflow: hidden;
 }
 
-/* SIDEBAR STYLING */
+/* SIDEBAR */
 .history-sidebar {
   width: 300px;
-  background: white;
+  background: #2a2a2a;
+  color: #fff;
   padding: 20px;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
+.sidebar-header {
+  color: #c2a078;
+  font-weight: bold;
+  font-size: 14px;
+  text-transform: uppercase;
+  border-bottom: 1px solid #444;
+  padding-bottom: 10px;
+}
+
 .sidebar-section label {
   display: block;
   font-size: 12px;
-  color: #666;
+  color: #aaa;
   margin-bottom: 5px;
 }
 
 .history-input {
   width: 100%;
   padding: 8px;
-  border: 1px solid #dcdfe6;
+  background: #1a1a1a;
+  border: 1px solid #444;
   border-radius: 4px;
+  color: #fff;
+  font-size: 13px;
+}
+
+.history-input:focus {
+  border-color: #c2a078;
   outline: none;
 }
 
 .history-query-btn {
-  background-color: #2563eb; /* Your requested Blue */
-  color: white;
+  background: #c2a078;
+  color: #fff;
   border: none;
   padding: 10px;
   border-radius: 4px;
@@ -64,67 +87,91 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   font-weight: bold;
+  transition: 0.3s;
 }
 
-.divider {
-  border: 0;
-  border-top: 1px solid #eee;
+.history-query-btn:hover {
+  background: #ab8b64;
 }
 
-/* PLAYBACK CONTROLS */
+/* PLAYBACK BOX */
 .playback-box {
-  background: #f8f9fa;
+  margin-top: auto;
+  background: #1a1a1a;
   padding: 15px;
-  border-radius: 4px;
-  font-size: 13px;
+  border-radius: 8px;
+  border: 1px solid #c2a07844;
+}
+
+.playback-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #c2a078;
+  margin-bottom: 10px;
 }
 
 .playback-btns {
   display: flex;
   gap: 10px;
-  margin-top: 10px;
+  margin-bottom: 15px;
 }
 
 .control-btn {
-  background: white;
-  border: 1px solid #ddd;
-  padding: 8px 15px;
+  background: #333;
+  color: #fff;
+  border: none;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
   cursor: pointer;
-  border-radius: 4px;
-}
-
-.playback-slider {
-  width: 100%;
-  margin-top: 15px;
-  cursor: pointer;
-}
-
-/* MAP AREA */
-.history-map-area {
-  flex: 1;
-  background: #e5e7eb;
-  border-radius: 4px;
-  position: relative;
-  overflow: hidden;
-}
-
-.map-placeholder {
-  width: 100%;
-  height: 100%;
-  background-image: linear-gradient(45deg, #e5e7eb 25%, #d1d5db 25%, #d1d5db 50%, #e5e7eb 50%, #e5e7eb 75%, #d1d5db 75%, #d1d5db 100%);
-  background-size: 40px 40px; /* Grid effect */
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.map-overlay-info {
-  background: rgba(255, 255, 255, 0.9);
-  padding: 15px 25px;
-  border-radius: 30px;
+.control-btn.play {
+  background: #c2a078;
+}
+
+.playback-slider {
+  width: 100%;
+  accent-color: #c2a078;
+  cursor: pointer;
+}
+
+.time-stamps {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
   color: #666;
-  font-size: 14px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin-top: 5px;
+}
+
+/* MAP AREA */
+.history-map-area {
+  flex: 1;
+  background: #1a1a1a;
+  position: relative;
+}
+
+.map-placeholder {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  text-align: center;
+}
+
+.map-overlay-info p {
+  color: #c2a078;
+  font-weight: bold;
+  margin: 0;
+}
+
+.map-overlay-info span {
+  font-size: 12px;
 }
