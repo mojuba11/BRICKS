@@ -11,72 +11,109 @@
   min-height: 100vh;
 }
 
-/* SIDEBAR */
+/* SIDEBAR - Updated to Dark Charcoal */
 .sidebar {
   width: 270px;
-  background: #0f172a;
+  background: #1a1a1a; 
   color: white;
   padding: 20px;
   flex-shrink: 0;
   overflow-y: auto;
+  border-right: 1px solid #333;
 }
 
 .logo {
   margin-bottom: 20px;
   font-size: 18px;
   font-weight: bold;
+  letter-spacing: 1px;
 }
 
 /* MENU */
 .menu-title {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 12px;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 4px;
   margin-bottom: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #eee;
+  transition: 0.3s;
 }
 
 .menu-title:hover {
-  background: #1e293b;
+  background: #252525;
+  color: #c2a078; /* Project Bronze */
 }
 
 .submenu {
-  margin-left: 15px;
+  margin-left: 10px;
   margin-bottom: 10px;
+  border-left: 1px solid #333;
 }
 
 .submenu-link {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
+  gap: 10px;
+  padding: 10px 15px;
   text-decoration: none;
-  color: #cbd5e1;
-  font-size: 14px;
-  border-radius: 6px;
+  color: #888;
+  font-size: 13px;
+  border-radius: 0 4px 4px 0;
+  transition: 0.2s;
 }
 
 .submenu-link:hover {
-  background: #1e293b;
-  color: white;
+  background: #252525;
+  color: #fff;
 }
 
+/* THE ACTIVE STATE - Fixed from Blue to Bronze */
 .submenu-link.active {
-  background: #1a73e8;
-  color: white;
+  background: rgba(194, 160, 120, 0.15) !important;
+  color: #c2a078 !important; /* PROJECT BRONZE */
+  border-left: 3px solid #c2a078;
+  font-weight: bold;
 }
 
-/* MAIN */
+/* MAIN CONTENT AREA */
 .main {
   flex: 1;
   padding: 20px;
-  background: #f4f6f9;
+  background: #121212; /* Dark background for Tactical look */
+  overflow-y: auto;
 }
 
 .topbar {
-  background: white;
-  padding: 15px;
-  border-radius: 10px;
+  background: #1a1a1a;
+  padding: 15px 25px;
+  border-radius: 4px;
   margin-bottom: 20px;
+  border: 1px solid #333;
+  color: #c2a078; /* Bronze text for header */
+}
+
+/* GLOBAL BUTTON STYLES */
+button {
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.logout-btn, .theme-toggle-btn {
+  background: #c2a078 !important;
+  color: white !important;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  margin-top: 10px;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.logout-btn:hover {
+  background: #ab8b64 !important;
 }
