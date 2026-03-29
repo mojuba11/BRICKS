@@ -2,19 +2,20 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Segoe UI", sans-serif;
+  font-family: "Segoe UI", "Roboto", sans-serif;
 }
 
 /* LAYOUT FIX */
 .layout {
   display: flex;
   min-height: 100vh;
+  background: #121212; /* Dark background for the whole app */
 }
 
-/* SIDEBAR - Updated to Dark Charcoal */
+/* SIDEBAR - Dark Charcoal */
 .sidebar {
   width: 270px;
-  background: #1a1a1a; 
+  background: #1a1a1a !important; 
   color: white;
   padding: 20px;
   flex-shrink: 0;
@@ -23,13 +24,14 @@
 }
 
 .logo {
-  margin-bottom: 20px;
-  font-size: 18px;
-  font-weight: bold;
+  margin-bottom: 25px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
   letter-spacing: 1px;
 }
 
-/* MENU */
+/* MENU TITLES */
 .menu-title {
   display: flex;
   justify-content: space-between;
@@ -37,21 +39,21 @@
   padding: 12px;
   cursor: pointer;
   border-radius: 4px;
-  margin-bottom: 5px;
+  margin-top: 10px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: bold;
   color: #eee;
-  transition: 0.3s;
+  transition: 0.2s;
 }
 
 .menu-title:hover {
   background: #252525;
-  color: #c2a078; /* Project Bronze */
+  color: #c2a078;
 }
 
+/* SUBMENU & LINKS */
 .submenu {
   margin-left: 10px;
-  margin-bottom: 10px;
   border-left: 1px solid #333;
 }
 
@@ -61,31 +63,29 @@
   gap: 10px;
   padding: 10px 15px;
   text-decoration: none;
-  color: #888;
+  color: #888 !important; /* Default link color */
   font-size: 13px;
-  border-radius: 0 4px 4px 0;
-  transition: 0.2s;
+  transition: 0.3s;
 }
 
 .submenu-link:hover {
-  background: #252525;
-  color: #fff;
+  color: #fff !important;
 }
 
-/* THE ACTIVE STATE - Fixed from Blue to Bronze */
+/* --- THE BRONZE FIX --- */
+/* This targets the NavLink 'active' class specifically */
 .submenu-link.active {
-  background: rgba(194, 160, 120, 0.15) !important;
   color: #c2a078 !important; /* PROJECT BRONZE */
+  background: rgba(194, 160, 120, 0.1) !important;
   border-left: 3px solid #c2a078;
   font-weight: bold;
 }
 
-/* MAIN CONTENT AREA */
+/* MAIN & TOPBAR */
 .main {
   flex: 1;
   padding: 20px;
-  background: #121212; /* Dark background for Tactical look */
-  overflow-y: auto;
+  background: #121212;
 }
 
 .topbar {
@@ -94,26 +94,26 @@
   border-radius: 4px;
   margin-bottom: 20px;
   border: 1px solid #333;
-  color: #c2a078; /* Bronze text for header */
+  color: #c2a078;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
-/* GLOBAL BUTTON STYLES */
-button {
-  cursor: pointer;
-  transition: 0.3s;
-}
-
+/* TACTICAL BUTTONS */
 .logout-btn, .theme-toggle-btn {
   background: #c2a078 !important;
   color: white !important;
-  border: none;
-  padding: 10px;
+  border: none !important;
+  padding: 12px;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 15px;
   font-weight: bold;
   border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .logout-btn:hover {
   background: #ab8b64 !important;
+  box-shadow: 0 0 10px rgba(194, 160, 120, 0.3);
 }
