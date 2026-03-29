@@ -9,224 +9,94 @@ function UserManagement() {
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState(null);
   
-  // Search state
-  const [queryId, setQueryId] = useState("");
-  const [queryDept, setQueryDept] = useState("");
-
   const [form, setForm] = useState({
     userId: "", userName: "", email: "", password: "", confirmPassword: "",
-    phone: "", dept: "", gender: "Male", role: "User",
-    isDeptAdmin: false, deviceId: "", remark: "", state: "Enable"
+    dept: "", state: "Enable", role: "User"
   });
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  useEffect(() => { loadData(); }, []);
 
   const loadData = async () => {
     setLoading(true);
-    
-    // 1. Fetch Departments
     try {
-      const deptRes = await userAPI.getDepartments();
-      if (deptRes.data) {
-        setDepartments(deptRes.data);
-      }
-    } catch (err) {
-      console.error("❌ Dept fetch failed:", err);
-    }
-
-    // 2. Fetch Users
-    try {
-      const userRes = await userAPI.getAll();
-      if (userRes.data) {
-        setUsers(userRes.data);
-      }
-    } catch (err) {
-      console.error("❌ User fetch failed:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleQuery = async () => {
-    try {
-      setLoading(true);
-      const res = await userAPI.query({ userId: queryId, dept: queryDept });
-      setUsers(res.data);
-    } catch (err) {
-      console.error("Query failed:", err);
-      loadData(); 
-    } finally {
-      setLoading(false);
-    }
+      const [dRes, uRes] = await Promise.all([userAPI.getDepartments(), userAPI.getAll()]);
+      setDepartments(dRes.data || []);
+      setUsers(uRes.data || []);
+    } catch (err) { console.error("Load failed", err); }
+    finally { setLoading(false); }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (form.password !== form.confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
+    if (form.password !== form.confirmPassword) return alert("Passwords mismatch!");
+    
     try {
       if (editing) {
         await userAPI.update(editing._id || editing.id, form);
       } else {
         await userAPI.create(form);
       }
-      loadData(); 
+      loadData();
       closeModal();
-    } catch (err) {
-      alert(err.response?.data?.message || "Failed to save user.");
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm("Delete this user permanently?")) {
-      try {
-        await userAPI.delete(id);
-        setUsers(users.filter(u => (u._id || u.id) !== id));
-      } catch (err) {
-        alert("Delete failed.");
-      }
-    }
+    } catch (err) { alert(err.response?.data?.message || "Save failed"); }
   };
 
   const closeModal = () => {
     setShowModal(false);
     setEditing(null);
-    setForm({ 
-      userId: "", userName: "", email: "", password: "", confirmPassword: "", 
-      phone: "", dept: "", gender: "Male", role: "User", 
-      isDeptAdmin: false, deviceId: "", remark: "", state: "Enable" 
-    });
+    setForm({ userId: "", userName: "", email: "", password: "", confirmPassword: "", dept: "", state: "Enable", role: "User" });
   };
 
-  if (loading) return <div className="loading">Connecting to Bricks Backend...</div>;
+  if (loading) return <div className="loading">Loading...</div>;
 
   return (
     <div className="user-page">
-      <div className="query-section">
-        <div className="query-item">
-          <label>User ID</label>
-          <input 
-            type="text" 
-            value={queryId} 
-            onChange={(e) => setQueryId(e.target.value)} 
-            placeholder="Search ID..." 
-          />
-        </div>
-        <div className="query-item">
-          <label>Department</label>
-          <select value={queryDept} onChange={(e) => setQueryDept(e.target.value)}>
-            <option value="">All Departments</option>
-            {departments.map(d => (
-              <option key={d._id} value={d.name}>{d.name}</option>
-            ))}
-          </select>
-        </div>
-        <button className="query-btn" onClick={handleQuery}>Query</button>
-        <button className="reset-btn" onClick={() => {setQueryId(""); setQueryDept(""); loadData();}}>Reset</button>
-      </div>
-
-      <div className="action-btns">
-         <button className="add-btn" onClick={() => setShowModal(true)}>+ Add user</button>
-      </div>
-
+      <button className="add-btn" onClick={() => setShowModal(true)}>+ Add User</button>
       <div className="table-container">
         <table>
           <thead>
-            <tr>
-              <th>User ID</th>
-              <th>User Name</th>
-              <th>Email</th>
-              <th>Department</th>
-              <th>State</th>
-              <th>Operate</th>
-            </tr>
+            <tr><th>User ID</th><th>Name</th><th>Email</th><th>Dept</th><th>State</th><th>Actions</th></tr>
           </thead>
           <tbody>
-            {users.length > 0 ? (
-              users.map((user) => (
-                <tr key={user._id || user.id}>
-                  {/* Mapping fix: checks for userId and handles both name/userName */}
-                  <td>{user.userId || "N/A"}</td>
-                  <td>{user.userName || user.name || "Unknown"}</td>
-                  <td>{user.email}</td>
-                  <td>{user.dept || "N/A"}</td>
-                  <td>{user.state}</td>
-                  <td>
-                    <button className="modify-btn" onClick={() => {
-                      setEditing(user);
-                      // Form mapping fix: ensures userName is populated from name if needed
-                      setForm({
-                        ...user, 
-                        userName: user.userName || user.name, 
-                        password: "", 
-                        confirmPassword: ""
-                      });
-                      setShowModal(true);
-                    }}>Modify</button>
-                    <button className="delete-btn" onClick={() => handleDelete(user._id || user.id)}>Delete</button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr><td colSpan="6">No users found.</td></tr>
-            )}
+            {users.map(user => (
+              <tr key={user._id}>
+                <td>{user.userId}</td>
+                <td>{user.userName}</td>
+                <td>{user.email}</td>
+                <td>{user.dept}</td>
+                <td>{user.state}</td>
+                <td>
+                  <button onClick={() => {
+                    setEditing(user);
+                    setForm({ ...user, password: "", confirmPassword: "" });
+                    setShowModal(true);
+                  }}>Modify</button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
 
       {showModal && (
         <div className="modal-overlay">
-          <div className="modify-card">
-            <div className="card-header">
-              <h3>{editing ? "Modify User" : "Add User"}</h3>
-              <button className="close-x" onClick={closeModal}>&times;</button>
-            </div>
-            <form onSubmit={handleSubmit}>
-              <div className="form-grid">
-                <div className="form-item">
-                  <label>* User ID</label>
-                  <input type="text" required value={form.userId} onChange={(e) => setForm({...form, userId: e.target.value})} />
-                </div>
-                <div className="form-item">
-                  <label>* Email Address</label>
-                  <input type="email" required value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} />
-                </div>
-                <div className="form-item">
-                  <label>* User Name</label>
-                  <input type="text" required value={form.userName} onChange={(e) => setForm({...form, userName: e.target.value})} />
-                </div>
-                <div className="form-item">
-                  <label>* Department</label>
-                  <select required value={form.dept} onChange={(e) => setForm({...form, dept: e.target.value})}>
-                    <option value="">Select Dept</option>
-                    {departments.map(d => (
-                      <option key={d._id} value={d.name}>{d.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="form-item">
-                  <label>* Password</label>
-                  <input type="password" required={!editing} value={form.password} onChange={(e) => setForm({...form, password: e.target.value})} />
-                </div>
-                <div className="form-item">
-                  <label>* Confirm Password</label>
-                  <input type="password" required={!editing} value={form.confirmPassword} onChange={(e) => setForm({...form, confirmPassword: e.target.value})} />
-                </div>
-              </div>
-              <div className="card-footer">
-                <button type="submit" className="confirm-btn">Confirm</button>
-                <button type="button" className="cancel-btn" onClick={closeModal}>Cancel</button>
-              </div>
-            </form>
-          </div>
+          <form className="modify-card" onSubmit={handleSubmit}>
+            <h3>{editing ? "Edit User" : "Add User"}</h3>
+            <input placeholder="User ID" value={form.userId} onChange={e => setForm({...form, userId: e.target.value})} required />
+            <input placeholder="User Name" value={form.userName} onChange={e => setForm({...form, userName: e.target.value})} required />
+            <input placeholder="Email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} required />
+            <select value={form.dept} onChange={e => setForm({...form, dept: e.target.value})} required>
+              <option value="">Select Dept</option>
+              {departments.map(d => <option key={d._id} value={d.name}>{d.name}</option>)}
+            </select>
+            <input type="password" placeholder="New Password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} required={!editing} />
+            <input type="password" placeholder="Confirm Password" value={form.confirmPassword} onChange={e => setForm({...form, confirmPassword: e.target.value})} required={!editing} />
+            <button type="submit">Confirm</button>
+            <button type="button" onClick={closeModal}>Cancel</button>
+          </form>
         </div>
       )}
     </div>
   );
 }
-
 export default UserManagement;
