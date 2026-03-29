@@ -64,7 +64,7 @@ function App() {
       {/* SIDEBAR */}
       <div className="sidebar">
         <div className="logo-section">
-            <h2 className="logo">BRICKS <span style={{color: "#c2a078"}}>VMS</span></h2>
+            <h2 className="logo">BRICKS <span style={{color: "#c2a078"}}>BODYCAM</span></h2>
         </div>
 
         {/* SCROLLABLE MENU CONTAINER */}
