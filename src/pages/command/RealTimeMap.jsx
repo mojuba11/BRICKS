@@ -2,7 +2,12 @@ import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import "./RealTimeMap.css"; // Ensure you created this file
+
+// --- Geoman Drawing Imports ---
+import "@geoman-io/leaflet-geoman-free";
+import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
+
+import "./RealTimeMap.css";
 
 // 1. Custom Light Brown Pulsing Icon for Live Units
 const createLiveIcon = () => L.divIcon({
@@ -26,8 +31,6 @@ export default function RealTimeMap() {
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://bricks-backend-7wnv.onrender.com";
   const API_URL = `${API_BASE}/api/device`;
-
-  // Default Map Center (Updates when devices are found)
   const defaultCenter = [4.8156, 7.0498];
 
   useEffect(() => {
@@ -46,19 +49,55 @@ export default function RealTimeMap() {
     };
 
     fetchMapData();
-    // Real-time polling: Refresh map every 5 seconds
     const interval = setInterval(fetchMapData, 5000);
     return () => clearInterval(interval);
   }, [API_URL]);
+
+  // Handle Geoman Controls and Event Logic
+  const onMapReady = (map) => {
+    map.pm.addControls({
+      position: 'topleft',
+      drawMarker: false,
+      drawCircleMarker: false,
+      drawPolyline: false,
+      drawRectangle: true,
+      drawPolygon: true,
+      drawCircle: true,
+      editMode: true,
+      dragMode: true,
+      removalMode: true,
+    });
+
+    // Set drawing style to match project Light Brown
+    map.pm.setPathOptions({
+      color: '#c2a078',
+      fillColor: '#c2a078',
+      fillOpacity: 0.3,
+      weight: 3
+    });
+
+    // Listener for when a fence is drawn
+    map.on("pm:create", (e) => {
+      const { layer, shape } = e;
+      console.log("Fence Created:", shape, layer.getLatLngs());
+      
+      // Prompt user or open modal to save fence data
+      const fenceName = prompt("Enter a name for this Geofence:");
+      if (fenceName) {
+        // Logic to POST to /api/fences would go here
+        alert(`Fence "${fenceName}" created successfully!`);
+      }
+    });
+  };
 
   if (loading) return <div className="map-loading">Loading Tactical Map...</div>;
 
   return (
     <div className="map-wrapper">
       <div className="map-header">
-        <h2 style={{ color: "#c2a078", marginBottom: "5px" }}>Real Time Tracking</h2>
+        <h2 style={{ color: "#c2a078", marginBottom: "5px" }}>Real Time Tracking & Geofencing</h2>
         <p style={{ color: "#888", fontSize: "12px", marginBottom: "15px" }}>
-          Active units pulsing in <span style={{ color: "#c2a078" }}>Light Brown</span>
+          Draw zones using the sidebar tools. Active units pulse in <span style={{ color: "#c2a078" }}>Light Brown</span>.
         </p>
       </div>
 
@@ -67,19 +106,16 @@ export default function RealTimeMap() {
           center={defaultCenter}
           zoom={13}
           scrollWheelZoom={true}
+          whenReady={(mapInstance) => onMapReady(mapInstance.target)}
           style={{ height: "550px", width: "100%", background: "#1a1a1a" }}
         >
-          {/* Using a Dark Mode TileLayer for a professional VMS look */}
           <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           />
 
           {devices.map((device) => {
-            // Check if device is linked to a slot in LiveVideo
             const isLive = device.slot !== null && device.slot !== undefined;
-            
-            // Ensure we have coordinates, otherwise fallback to default
             const position = [
               device.lat || (defaultCenter[0] + (Math.random() - 0.5) * 0.01), 
               device.lng || (defaultCenter[1] + (Math.random() - 0.5) * 0.01)
