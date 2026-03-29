@@ -73,7 +73,7 @@ function App() {
             {/* DASHBOARD */}
             <NavLink to="/dashboard" className="menu-title-link" style={activeStyle}>
                 <div className="menu-single">
-                    <FaTachometerAlt /> <span>DASHBOARD</span>
+                    <FaTachometerAlt /> <span>COMMAND & DASHBOARD</span>
                 </div>
             </NavLink>
 
