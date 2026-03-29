@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
+  // Ensure no trailing slash here to avoid 404s with double slashes
   baseURL: 'https://bricks-backend-7wnv.onrender.com/api', 
   headers: {
     'Content-Type': 'application/json'
@@ -8,25 +9,27 @@ const API = axios.create({
 });
 
 export const userAPI = {
-  // Get all users
+  // 1. Get all users
   getAll: () => API.get('/users'),
 
-  // Search/Filter users (matches your Query button logic)
+  // 2. Search/Filter users (Used by the "Query" button)
+  // This sends params like ?userId=101&dept=4444
   query: (params) => API.get('/users/search', { params }),
 
-  // Get departments to populate the dropdown in the User form
+  // 3. Get departments (Populates your dropdown with "4444", etc.)
   getDepartments: () => API.get('/departments'),
 
-  // Create new user (includes email, userId, etc.)
+  // 4. Create new user
   create: (userData) => API.post('/users', userData),
 
-  // Update existing user
+  // 5. Update existing user (Uses the MongoDB _id)
   update: (id, userData) => API.put(`/users/${id}`, userData),
 
-  // Delete single user
+  // 6. Delete single user
   delete: (id) => API.delete(`/users/${id}`),
 
-  // Delete multiple users (matches your "Delete in batches" button)
+  // 7. Delete multiple users (Batch Delete)
+  // Note: We use POST because some firewalls block DELETE requests with a Body
   batchDelete: (ids) => API.post('/users/batch-delete', { ids })
 };
 

@@ -9,20 +9,14 @@ function UserManagement() {
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState(null);
   
+  // Search state
+  const [queryId, setQueryId] = useState("");
+  const [queryDept, setQueryDept] = useState("");
+
   const [form, setForm] = useState({
-    userId: "",
-    userName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    phone: "",
-    dept: "",
-    gender: "Male",
-    role: "User",
-    isDeptAdmin: false,
-    deviceId: "",
-    remark: "",
-    state: "Enable"
+    userId: "", userName: "", email: "", password: "", confirmPassword: "",
+    phone: "", dept: "", gender: "Male", role: "User",
+    isDeptAdmin: false, deviceId: "", remark: "", state: "Enable"
   });
 
   useEffect(() => {
@@ -36,14 +30,24 @@ function UserManagement() {
         userAPI.getAll(),
         userAPI.getDepartments()
       ]);
-      
-      console.log("Departments from backend:", deptRes.data); // DEBUG: Check keys here
-      
       setUsers(userRes.data);
       setDepartments(deptRes.data);
     } catch (err) {
       console.error("Fetch error:", err);
-      // Removed alert to prevent annoying popups while Render is waking up
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Logic for the Query button
+  const handleQuery = async () => {
+    try {
+      setLoading(true);
+      const res = await userAPI.query({ userId: queryId, dept: queryDept });
+      setUsers(res.data);
+    } catch (err) {
+      console.error("Query failed:", err);
+      loadData(); // Fallback to reload everything
     } finally {
       setLoading(false);
     }
@@ -55,10 +59,8 @@ function UserManagement() {
       alert("Passwords do not match!");
       return;
     }
-
     try {
       if (editing) {
-        // Use editing._id or editing.id based on backend
         await userAPI.update(editing._id || editing.id, form);
       } else {
         await userAPI.create(form);
@@ -95,10 +97,30 @@ function UserManagement() {
 
   return (
     <div className="user-page">
+      {/* Search / Query Section */}
+      <div className="query-section">
+        <div className="query-item">
+          <label>User ID</label>
+          <input type="text" value={queryId} onChange={(e) => setQueryId(e.target.value)} placeholder="Search ID..." />
+        </div>
+        <div className="query-item">
+          <label>Department</label>
+          <select value={queryDept} onChange={(e) => setQueryDept(e.target.value)}>
+            <option value="">All Departments</option>
+            {departments.map(d => (
+              <option key={d._id} value={d.name}>{d.name}</option>
+            ))}
+          </select>
+        </div>
+        <button className="query-btn" onClick={handleQuery}>Query</button>
+        <button className="reset-btn" onClick={() => {setQueryId(""); setQueryDept(""); loadData();}}>Reset</button>
+      </div>
+
       <div className="action-btns">
          <button className="add-btn" onClick={() => setShowModal(true)}>+ Add user</button>
       </div>
 
+      {/* Table Section */}
       <div className="table-container">
         <table>
           <thead>
@@ -131,12 +153,13 @@ function UserManagement() {
                 </tr>
               ))
             ) : (
-              <tr><td colSpan="6">No users found.</td></tr>
+              <tr><td colSpan="6">No users found. Click "Query" to refresh if backend was sleeping.</td></tr>
             )}
           </tbody>
         </table>
       </div>
 
+      {/* Modal Section */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modify-card">
@@ -163,9 +186,7 @@ function UserManagement() {
                   <select required value={form.dept} onChange={(e) => setForm({...form, dept: e.target.value})}>
                     <option value="">Select Dept</option>
                     {departments.map(d => (
-                      <option key={d._id || d.id} value={d.name || d.deptName}>
-                        {d.name || d.deptName}
-                      </option>
+                      <option key={d._id} value={d.name}>{d.name}</option>
                     ))}
                   </select>
                 </div>
@@ -176,14 +197,6 @@ function UserManagement() {
                 <div className="form-item">
                   <label>* Confirm Password</label>
                   <input type="password" required={!editing} value={form.confirmPassword} onChange={(e) => setForm({...form, confirmPassword: e.target.value})} />
-                </div>
-                <div className="form-item">
-                  <label>Phone Number</label>
-                  <input type="text" value={form.phone} onChange={(e) => setForm({...form, phone: e.target.value})} />
-                </div>
-                <div className="form-item">
-                  <label>Device ID</label>
-                  <input type="text" value={form.deviceId} onChange={(e) => setForm({...form, deviceId: e.target.value})} />
                 </div>
               </div>
               <div className="card-footer">
