@@ -53,9 +53,10 @@ function App() {
 
   // Tactical Bronze Active Style Logic
   const activeStyle = ({ isActive }) => ({
-    color: isActive ? "#c2a078" : "",
-    borderLeft: isActive ? "4px solid #c2a078" : "4px solid transparent",
-    backgroundColor: isActive ? "rgba(194, 160, 120, 0.1)" : ""
+    color: isActive ? "#c2a078" : "#e0e0e0",
+    borderLeft: isActive ? "5px solid #c2a078" : "5px solid transparent",
+    backgroundColor: isActive ? "rgba(194, 160, 120, 0.15)" : "transparent",
+    fontWeight: isActive ? "900" : "700"
   });
 
   return (
@@ -64,13 +65,16 @@ function App() {
       {/* SIDEBAR */}
       <div className="sidebar">
         <div className="logo-section">
-            <h2 className="logo">BRICKS <span style={{color: "#c2a078"}}>BODYCAM</span></h2>
+            <h1 className="logo-text">
+                BRICKS <span className="logo-vms-glow">BODYCAM</span>
+            </h1>
+            <div className="logo-underline"></div>
         </div>
 
         {/* SCROLLABLE MENU CONTAINER */}
-        <div className="sidebar-menu-scroll">
+        <div className="sidebar-menu">
             
-            {/* DASHBOARD */}
+            {/* DASHBOARD LINK (ULTRA BOLD) */}
             <NavLink to="/dashboard" className="menu-title-link" style={activeStyle}>
                 <div className="menu-single">
                     <FaTachometerAlt /> <span>COMMAND & DASHBOARD</span>
@@ -118,7 +122,7 @@ function App() {
                 </div>
             )}
 
-            {/* SYSTEM SETUP */}
+            {/* SYSTEM SETUP (BOLDER & READABLE) */}
             <div className={`menu-title ${openMenu === "system" ? "active-title" : ""}`} onClick={() => toggleMenu("system")}>
                 <span>SYSTEM SETUP</span>
                 {openMenu === "system" ? <FaChevronUp /> : <FaChevronDown />}
@@ -149,7 +153,7 @@ function App() {
       {/* MAIN CONTENT AREA */}
       <div className="main">
         <div className="topbar">
-          <h3 style={{color: "#c2a078"}}><FaShieldAlt /> SYSTEM STATUS: OPERATIONAL</h3>
+          <h3 style={{color: "#c2a078", fontWeight: "900"}}><FaShieldAlt /> SYSTEM STATUS: OPERATIONAL</h3>
         </div>
 
         <div className="content-area">
