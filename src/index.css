@@ -1,119 +1,50 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", "Roboto", sans-serif;
+/* index.css */
+:root {
+  --bronze: #c2a078;
+  --dark-bg: #121212;
+  --sidebar-bg: #1a1a1a;
 }
 
-/* LAYOUT FIX */
-.layout {
-  display: flex;
-  min-height: 100vh;
-  background: #121212; /* Dark background for the whole app */
-}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
 
-/* SIDEBAR - Dark Charcoal */
+body { background-color: var(--dark-bg); color: white; }
+
+.layout { display: flex; min-height: 100vh; }
+
 .sidebar {
   width: 270px;
-  background: #1a1a1a !important; 
-  color: white;
-  padding: 20px;
-  flex-shrink: 0;
-  overflow-y: auto;
+  background: var(--sidebar-bg) !important;
   border-right: 1px solid #333;
+  padding: 20px;
 }
 
-.logo {
-  margin-bottom: 25px;
-  font-size: 20px;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: 1px;
-}
-
-/* MENU TITLES */
-.menu-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px;
-  cursor: pointer;
-  border-radius: 4px;
-  margin-top: 10px;
-  font-size: 13px;
-  font-weight: bold;
-  color: #eee;
-  transition: 0.2s;
-}
-
-.menu-title:hover {
-  background: #252525;
-  color: #c2a078;
-}
-
-/* SUBMENU & LINKS */
-.submenu {
-  margin-left: 10px;
-  border-left: 1px solid #333;
+/* --- THE BLUE KILLER --- */
+/* React Router NavLink adds the .active class. We force it to Bronze. */
+.active, .submenu-link.active {
+  color: var(--bronze) !important;
+  background-color: rgba(194, 160, 120, 0.1) !important;
+  border-left: 4px solid var(--bronze) !important;
 }
 
 .submenu-link {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 15px;
+  padding: 10px;
   text-decoration: none;
-  color: #888 !important; /* Default link color */
-  font-size: 13px;
-  transition: 0.3s;
+  color: #aaa; /* Non-active color */
 }
 
-.submenu-link:hover {
-  color: #fff !important;
-}
-
-/* --- THE BRONZE FIX --- */
-/* This targets the NavLink 'active' class specifically */
-.submenu-link.active {
-  color: #c2a078 !important; /* PROJECT BRONZE */
-  background: rgba(194, 160, 120, 0.1) !important;
-  border-left: 3px solid #c2a078;
-  font-weight: bold;
-}
-
-/* MAIN & TOPBAR */
-.main {
-  flex: 1;
-  padding: 20px;
-  background: #121212;
-}
-
-.topbar {
-  background: #1a1a1a;
-  padding: 15px 25px;
-  border-radius: 4px;
-  margin-bottom: 20px;
-  border: 1px solid #333;
-  color: #c2a078;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-/* TACTICAL BUTTONS */
-.logout-btn, .theme-toggle-btn {
-  background: #c2a078 !important;
+/* Force buttons to Bronze */
+button, .logout-btn, .theme-toggle-btn {
+  background-color: var(--bronze) !important;
   color: white !important;
   border: none !important;
-  padding: 12px;
-  width: 100%;
-  margin-top: 15px;
-  font-weight: bold;
-  border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  cursor: pointer;
 }
 
-.logout-btn:hover {
-  background: #ab8b64 !important;
-  box-shadow: 0 0 10px rgba(194, 160, 120, 0.3);
-}
+/* KPI Dashboard Styles */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+.kpi-card { background: #1a1a1a; padding: 20px; border-radius: 8px; border: 1px solid #333; display: flex; align-items: center; gap: 15px; }
+.kpi-icon { color: var(--bronze); font-size: 24px; }
+.alert-active .kpi-icon { color: #ff4d4d; }
