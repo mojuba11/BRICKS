@@ -25,29 +25,41 @@ function UserManagement() {
 
   const loadData = async () => {
     setLoading(true);
+    
+    // 1. Fetch Departments (Independent of Users)
     try {
-      const [userRes, deptRes] = await Promise.all([
-        userAPI.getAll(),
-        userAPI.getDepartments()
-      ]);
-      setUsers(userRes.data);
-      setDepartments(deptRes.data);
+      const deptRes = await userAPI.getDepartments();
+      if (deptRes.data) {
+        setDepartments(deptRes.data);
+        console.log("✅ Departments loaded:", deptRes.data);
+      }
     } catch (err) {
-      console.error("Fetch error:", err);
+      console.error("❌ Dept fetch failed (Check if /api/departments exists):", err);
+    }
+
+    // 2. Fetch Users (Independent of Departments)
+    try {
+      const userRes = await userAPI.getAll();
+      if (userRes.data) {
+        setUsers(userRes.data);
+        console.log("✅ Users loaded:", userRes.data);
+      }
+    } catch (err) {
+      console.error("❌ User fetch failed (This is your 404):", err);
     } finally {
       setLoading(false);
     }
   };
 
-  // Logic for the Query button
   const handleQuery = async () => {
     try {
       setLoading(true);
       const res = await userAPI.query({ userId: queryId, dept: queryDept });
       setUsers(res.data);
     } catch (err) {
-      console.error("Query failed:", err);
-      loadData(); // Fallback to reload everything
+      console.error("Query failed (404 - Check backend route /search):", err);
+      // Fallback to reload everything if search isn't implemented yet
+      loadData(); 
     } finally {
       setLoading(false);
     }
@@ -97,11 +109,15 @@ function UserManagement() {
 
   return (
     <div className="user-page">
-      {/* Search / Query Section */}
       <div className="query-section">
         <div className="query-item">
           <label>User ID</label>
-          <input type="text" value={queryId} onChange={(e) => setQueryId(e.target.value)} placeholder="Search ID..." />
+          <input 
+            type="text" 
+            value={queryId} 
+            onChange={(e) => setQueryId(e.target.value)} 
+            placeholder="Search ID..." 
+          />
         </div>
         <div className="query-item">
           <label>Department</label>
@@ -120,7 +136,6 @@ function UserManagement() {
          <button className="add-btn" onClick={() => setShowModal(true)}>+ Add user</button>
       </div>
 
-      {/* Table Section */}
       <div className="table-container">
         <table>
           <thead>
@@ -153,13 +168,12 @@ function UserManagement() {
                 </tr>
               ))
             ) : (
-              <tr><td colSpan="6">No users found. Click "Query" to refresh if backend was sleeping.</td></tr>
+              <tr><td colSpan="6">No users found. (Check backend console for 404)</td></tr>
             )}
           </tbody>
         </table>
       </div>
 
-      {/* Modal Section */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modify-card">
