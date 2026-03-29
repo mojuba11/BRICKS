@@ -1,0 +1,44 @@
+.app-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevents the whole page from scrolling, only the content area */
+}
+
+.content-area {
+  flex: 1;
+  padding: 20px;
+  background-color: #f8f9fa;
+  overflow-y: auto; /* Allows individual pages to scroll */
+}
+
+/* DARK MODE OVERRIDES */
+.dark-theme .content-area {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+.dark-theme .topbar {
+  background-color: #1a1a1a;
+  border-bottom: 1px solid #333;
+}
+
+.dark-theme .page-title {
+  color: #c2a078;
+}
+
+.dark-theme .user-profile {
+  border-left: 1px solid #333;
+}
+
+.dark-theme .user-name {
+  color: #eee;
+}
