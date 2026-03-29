@@ -1,45 +1,58 @@
-.file-query-container { padding: 10px; background-color: #f0f2f5; height: 100%; }
-.file-tabs { display: flex; background: white; border-bottom: 1px solid #ddd; margin-bottom: 10px; }
-.tab.active { padding: 10px 20px; font-size: 13px; color: #2563eb; border-bottom: 2px solid #2563eb; font-weight: 500; }
-.file-content-card { background: white; padding: 20px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+/* --- MODAL SYSTEM --- */
+.vms-modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
 
-/* Filter Grid */
-.filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
-.mt-10 { margin-top: 10px; }
-.f-input { border: 1px solid #dcdfe6; padding: 8px; border-radius: 4px; outline: none; font-size: 12px; transition: border 0.2s; }
-.f-input:focus { border-color: #2563eb; }
+.vms-modal-content {
+  background: #1a1a1a;
+  width: 70%;
+  max-width: 900px;
+  border-radius: 8px;
+  border: 1px solid #c2a078;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
 
-/* Action Buttons */
-.action-bar-row { display: flex; gap: 10px; margin: 20px 0; }
-.action-bar-row button { border: none; padding: 8px 18px; border-radius: 4px; color: white; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; transition: opacity 0.2s; }
-.action-bar-row button:hover { opacity: 0.9; }
-.btn-query { background-color: #009688; }
-.btn-upload { background-color: #2196f3; }
-.btn-delete { background-color: #ff5722; }
+.modal-header {
+  background: #2a2a2a;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #c2a078;
+  font-weight: bold;
+  border-bottom: 1px solid #444;
+}
 
-/* Table System */
-.file-table-wrapper { border: 1px solid #ebeef5; overflow-x: auto; border-radius: 4px; }
-.vms-table { width: 100%; border-collapse: collapse; min-width: 900px; }
-.vms-table th { background: #f8f9fa; padding: 12px; text-align: left; font-size: 12px; color: #777; border-bottom: 1px solid #ebeef5; text-transform: uppercase; }
-.vms-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; font-size: 13px; color: #444; vertical-align: middle; }
+.close-modal {
+  background: none; border: none; color: #888;
+  cursor: pointer; font-size: 18px;
+}
+.close-modal:hover { color: #fff; }
 
-/* Table Specific Elements */
-.table-ops { display: flex; gap: 6px; }
-.op-btn { border: 1px solid #e0e0e0; background: white; padding: 5px; border-radius: 3px; cursor: pointer; color: #888; display: flex; align-items: center; }
-.op-btn:hover { border-color: #2563eb; color: #2563eb; }
-.table-thumb { width: 70px; height: 45px; object-fit: cover; border-radius: 3px; border: 1px solid #eee; }
-.audio-placeholder { width: 70px; height: 45px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; font-size: 18px; border-radius: 3px; border: 1px dashed #ccc; }
+.modal-body {
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  background: #000;
+}
 
-/* Tags */
-.type-tag { padding: 2px 8px; border-radius: 12px; font-size: 10px; color: white; font-weight: bold; text-transform: uppercase; }
-.type-tag.photo { background-color: #409eff; }
-.type-tag.audio { background-color: #909399; }
-.type-tag.video { background-color: #67c23a; }
+.modal-video, .modal-img {
+  max-width: 100%;
+  max-height: 70vh;
+  border-radius: 4px;
+}
 
-/* Pagination */
-.pagination-footer { margin-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #666; }
-.page-left { display: flex; align-items: center; gap: 8px; }
-.p-nav { border: 1px solid #ddd; background: white; padding: 4px 10px; cursor: pointer; border-radius: 3px; }
-.p-active { background: #009688; color: white; padding: 4px 10px; border-radius: 3px; }
-.p-confirm { border: 1px solid #ddd; background: white; padding: 4px 12px; cursor: pointer; border-radius: 3px; }
-.p-select { padding: 4px; border: 1px solid #ddd; border-radius: 3px; outline: none; }
+.modal-footer {
+  padding: 15px;
+  background: #2a2a2a;
+  display: flex;
+  justify-content: flex-end;
+}
