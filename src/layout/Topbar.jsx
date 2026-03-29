@@ -1,30 +1,69 @@
 import React, { useState } from "react";
-import { FaBell, FaMoon, FaSun } from "react-icons/fa";
+import { FaBell, FaMoon, FaSun, FaUserShield, FaChevronDown } from "react-icons/fa";
+import "./Topbar.css";
 
 function Topbar({ darkMode, setDarkMode }) {
   const [showNotif, setShowNotif] = useState(false);
 
   return (
     <div className="topbar">
-      <h2>Dashboard</h2>
+      <div className="topbar-left">
+        <h2 className="page-title">Command Center</h2>
+      </div>
 
       <div className="top-actions">
+        {/* THEME TOGGLE */}
+        <div onClick={() => setDarkMode(!darkMode)} className="theme-toggle-btn" title="Toggle Mode">
+          {darkMode ? <FaSun className="sun-icon" /> : <FaMoon className="moon-icon" />}
+        </div>
 
-        <div className="notification">
-          <FaBell onClick={() => setShowNotif(!showNotif)} />
+        {/* NOTIFICATIONS */}
+        <div className="notification-wrapper">
+          <div className="notif-trigger" onClick={() => setShowNotif(!showNotif)}>
+            <FaBell />
+            <span className="notif-badge">3</span>
+          </div>
+          
           {showNotif && (
             <div className="notif-dropdown">
-              <p>🚨 New SOS Alert</p>
-              <p>📹 Live Feed Active</p>
-              <p>📂 File Downloaded</p>
+              <div className="notif-header">System Alerts</div>
+              <div className="notif-item critical">
+                <span className="alert-dot"></span>
+                <div>
+                  <strong>🚨 SOS Alert</strong>
+                  <p>Device DEV-004 triggered emergency.</p>
+                </div>
+              </div>
+              <div className="notif-item">
+                <span className="info-dot"></span>
+                <div>
+                  <strong>📹 Live Feed</strong>
+                  <p>Operator John is viewing DEV-001.</p>
+                </div>
+              </div>
+              <div className="notif-item">
+                <span className="info-dot"></span>
+                <div>
+                  <strong>📂 File Download</strong>
+                  <p>Audit log: Evidence_99.mp4 downloaded.</p>
+                </div>
+              </div>
+              <div className="notif-footer">View All Notifications</div>
             </div>
           )}
         </div>
 
-        <div onClick={() => setDarkMode(!darkMode)} className="theme-toggle">
-          {darkMode ? <FaSun /> : <FaMoon />}
+        {/* USER PROFILE */}
+        <div className="user-profile">
+          <div className="avatar-circle">
+            <FaUserShield />
+          </div>
+          <div className="user-info">
+            <span className="user-name">BRICKS ADMIN</span>
+            <span className="user-role">Superuser</span>
+          </div>
+          <FaChevronDown className="chevron-icon" />
         </div>
-
       </div>
     </div>
   );
