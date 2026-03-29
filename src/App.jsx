@@ -3,7 +3,7 @@ import { Routes, Route, NavLink, Navigate } from "react-router-dom";
 import {
   FaChevronDown, FaChevronUp, FaMap, FaVideo, FaBell,
   FaRoute, FaFileAlt, FaDownload, FaChartBar, FaUsers, FaCogs,
-  FaSun, FaMoon, FaTachometerAlt
+  FaSun, FaMoon, FaTachometerAlt, FaShieldAlt
 } from "react-icons/fa";
 
 /* NEW DASHBOARD IMPORT */
@@ -37,7 +37,7 @@ import IntercomGroup from "./pages/system/IntercomGroup";
 import FenceManagement from "./pages/system/FenceManagement";
 
 function App() {
-  const [openMenu, setOpenMenu] = useState("command"); // Default open
+  const [openMenu, setOpenMenu] = useState("command"); 
   const [darkMode, setDarkMode] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(
     localStorage.getItem("isAuthenticated") === "true"
@@ -51,7 +51,7 @@ function App() {
     return <Login setAuth={setIsAuthenticated} />;
   }
 
-  // Bronze Active Style Logic
+  // Tactical Bronze Active Style Logic
   const activeStyle = ({ isActive }) => ({
     color: isActive ? "#c2a078" : "",
     borderLeft: isActive ? "4px solid #c2a078" : "4px solid transparent",
@@ -63,47 +63,81 @@ function App() {
       
       {/* SIDEBAR */}
       <div className="sidebar">
-        <h2 className="logo">BRICKS <span style={{color: "#c2a078"}}>VMS</span></h2>
-
-        {/* DASHBOARD LINK (Root Level) */}
-        <NavLink to="/dashboard" className="menu-title-link" style={activeStyle}>
-          <div className="menu-single">
-            <FaTachometerAlt /> <span>DASHBOARD</span>
-          </div>
-        </NavLink>
-
-        {/* COMMAND & DISPATCH */}
-        <div className="menu-title" onClick={() => toggleMenu("command")}>
-          <span>COMMAND & DISPATCH</span>
-          {openMenu === "command" ? <FaChevronUp /> : <FaChevronDown />}
+        <div className="logo-section">
+            <h2 className="logo">BRICKS <span style={{color: "#c2a078"}}>VMS</span></h2>
         </div>
-        {openMenu === "command" && (
-          <div className="submenu">
-            <NavLink to="/map" className="submenu-link" style={activeStyle}><FaMap /> Real Time Map</NavLink>
-            <NavLink to="/live-video" className="submenu-link" style={activeStyle}><FaVideo /> Live Video</NavLink>
-            <NavLink to="/sos-query" className="submenu-link" style={activeStyle}><FaBell /> SOS Query</NavLink>
-            <NavLink to="/fence-query" className="submenu-link" style={activeStyle}><FaRoute /> Fence Query</NavLink>
-            <NavLink to="/history-route" className="submenu-link" style={activeStyle}><FaRoute /> History Route</NavLink>
-          </div>
-        )}
 
-        {/* DOCUMENT */}
-        <div className="menu-title" onClick={() => toggleMenu("document")}>
-          <span>DOCUMENT</span>
-          {openMenu === "document" ? <FaChevronUp /> : <FaChevronDown />}
+        {/* SCROLLABLE MENU CONTAINER */}
+        <div className="sidebar-menu-scroll">
+            
+            {/* DASHBOARD */}
+            <NavLink to="/dashboard" className="menu-title-link" style={activeStyle}>
+                <div className="menu-single">
+                    <FaTachometerAlt /> <span>DASHBOARD</span>
+                </div>
+            </NavLink>
+
+            {/* COMMAND & DISPATCH */}
+            <div className={`menu-title ${openMenu === "command" ? "active-title" : ""}`} onClick={() => toggleMenu("command")}>
+                <span>COMMAND & DISPATCH</span>
+                {openMenu === "command" ? <FaChevronUp /> : <FaChevronDown />}
+            </div>
+            {openMenu === "command" && (
+                <div className="submenu">
+                    <NavLink to="/map" className="submenu-link" style={activeStyle}><FaMap /> Real Time Map</NavLink>
+                    <NavLink to="/live-video" className="submenu-link" style={activeStyle}><FaVideo /> Live Video</NavLink>
+                    <NavLink to="/sos-query" className="submenu-link" style={activeStyle}><FaBell /> SOS Query</NavLink>
+                    <NavLink to="/fence-query" className="submenu-link" style={activeStyle}><FaRoute /> Fence Query</NavLink>
+                    <NavLink to="/history-route" className="submenu-link" style={activeStyle}><FaRoute /> History Route</NavLink>
+                </div>
+            )}
+
+            {/* DOCUMENT */}
+            <div className={`menu-title ${openMenu === "document" ? "active-title" : ""}`} onClick={() => toggleMenu("document")}>
+                <span>DOCUMENT</span>
+                {openMenu === "document" ? <FaChevronUp /> : <FaChevronDown />}
+            </div>
+            {openMenu === "document" && (
+                <div className="submenu">
+                    <NavLink to="/file-query" className="submenu-link" style={activeStyle}><FaFileAlt /> File Query</NavLink>
+                    <NavLink to="/download-query" className="submenu-link" style={activeStyle}><FaDownload /> Download Query</NavLink>
+                </div>
+            )}
+
+            {/* REPORT */}
+            <div className={`menu-title ${openMenu === "report" ? "active-title" : ""}`} onClick={() => toggleMenu("report")}>
+                <span>REPORT</span>
+                {openMenu === "report" ? <FaChevronUp /> : <FaChevronDown />}
+            </div>
+            {openMenu === "report" && (
+                <div className="submenu">
+                    <NavLink to="/user-data" className="submenu-link" style={activeStyle}><FaChartBar /> User Data Statistics</NavLink>
+                    <NavLink to="/key-statistics" className="submenu-link" style={activeStyle}><FaChartBar /> Key Statistics</NavLink>
+                    <NavLink to="/time-statistics" className="submenu-link" style={activeStyle}><FaChartBar /> Time Statistics</NavLink>
+                    <NavLink to="/user-check" className="submenu-link" style={activeStyle}><FaChartBar /> User Check Statistics</NavLink>
+                </div>
+            )}
+
+            {/* SYSTEM SETUP */}
+            <div className={`menu-title ${openMenu === "system" ? "active-title" : ""}`} onClick={() => toggleMenu("system")}>
+                <span>SYSTEM SETUP</span>
+                {openMenu === "system" ? <FaChevronUp /> : <FaChevronDown />}
+            </div>
+            {openMenu === "system" && (
+                <div className="submenu">
+                    <NavLink to="/department" className="submenu-link" style={activeStyle}><FaUsers /> Department Management</NavLink>
+                    <NavLink to="/user-management" className="submenu-link" style={activeStyle}><FaUsers /> User Management</NavLink>
+                    <NavLink to="/device-management" className="submenu-link" style={activeStyle}><FaCogs /> Device Management</NavLink>
+                    <NavLink to="/intercom-group" className="submenu-link" style={activeStyle}><FaUsers /> Intercom Group</NavLink>
+                    <NavLink to="/fence-management" className="submenu-link" style={activeStyle}><FaRoute /> Fence Management</NavLink>
+                </div>
+            )}
         </div>
-        {openMenu === "document" && (
-          <div className="submenu">
-            <NavLink to="/file-query" className="submenu-link" style={activeStyle}><FaFileAlt /> File Query</NavLink>
-            <NavLink to="/download-query" className="submenu-link" style={activeStyle}><FaDownload /> Download Query</NavLink>
-          </div>
-        )}
 
-        {/* ... Other Menus Follow same pattern ... */}
-
+        {/* FIXED FOOTER */}
         <div className="sidebar-footer">
             <button className="theme-toggle-btn-tactical" onClick={() => setDarkMode(!darkMode)}>
-                {darkMode ? <FaSun /> : <FaMoon />} {darkMode ? "LIGHT" : "DARK"}
+                {darkMode ? <FaSun /> : <FaMoon />} {darkMode ? "LIGHT MODE" : "DARK MODE"}
             </button>
             <button className="logout-btn-tactical" onClick={() => {
                 localStorage.removeItem("isAuthenticated");
@@ -112,35 +146,35 @@ function App() {
         </div>
       </div>
 
-      {/* MAIN CONTENT */}
+      {/* MAIN CONTENT AREA */}
       <div className="main">
         <div className="topbar">
-          <h3 style={{color: "#c2a078"}}>SYSTEM STATUS: OPERATIONAL</h3>
+          <h3 style={{color: "#c2a078"}}><FaShieldAlt /> SYSTEM STATUS: OPERATIONAL</h3>
         </div>
 
-        <Routes>
-          {/* ✅ UPDATED REDIRECT: Go to Dashboard first */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          
-          <Route path="/map" element={<RealTimeMap />} />
-          <Route path="/live-video" element={<LiveVideo />} />
-          <Route path="/sos-query" element={<SOSQuery />} />
-          <Route path="/fence-query" element={<FenceQuery />} />
-          <Route path="/history-route" element={<HistoryRoute />} />
-          <Route path="/file-query" element={<FileQuery />} />
-          <Route path="/download-query" element={<DownloadQuery />} />
-          <Route path="/user-data" element={<UserDataStatistics />} />
-          <Route path="/key-statistics" element={<KeyStatistics />} />
-          <Route path="/time-statistics" element={<TimeStatistics />} />
-          <Route path="/user-check" element={<UserCheckStatistics />} />
-          <Route path="/department" element={<Department />} />
-          <Route path="/user-management" element={<UserManagement />} />
-          <Route path="/device-management" element={<DeviceManagement />} />
-          <Route path="/intercom-group" element={<IntercomGroup />} />
-          <Route path="/fence-management" element={<FenceManagement />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
+        <div className="content-area">
+            <Routes>
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/map" element={<RealTimeMap />} />
+                <Route path="/live-video" element={<LiveVideo />} />
+                <Route path="/sos-query" element={<SOSQuery />} />
+                <Route path="/fence-query" element={<FenceQuery />} />
+                <Route path="/history-route" element={<HistoryRoute />} />
+                <Route path="/file-query" element={<FileQuery />} />
+                <Route path="/download-query" element={<DownloadQuery />} />
+                <Route path="/user-data" element={<UserDataStatistics />} />
+                <Route path="/key-statistics" element={<KeyStatistics />} />
+                <Route path="/time-statistics" element={<TimeStatistics />} />
+                <Route path="/user-check" element={<UserCheckStatistics />} />
+                <Route path="/department" element={<Department />} />
+                <Route path="/user-management" element={<UserManagement />} />
+                <Route path="/device-management" element={<DeviceManagement />} />
+                <Route path="/intercom-group" element={<IntercomGroup />} />
+                <Route path="/fence-management" element={<FenceManagement />} />
+                <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+        </div>
       </div>
     </div>
   );
