@@ -4,8 +4,8 @@ import "./LiveVideo.css";
 
 export default function LiveVideo() {
   const [gridSize, setGridSize] = useState(16);
-  const [slots, setSlots] = useState([]); // This stores which camera is in which grid slot
-  const [allDevices, setAllDevices] = useState([]); // All devices from your DB
+  const [slots, setSlots] = useState([]); 
+  const [allDevices, setAllDevices] = useState([]); 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
 
@@ -21,9 +21,10 @@ export default function LiveVideo() {
       const res = await fetch(API_URL);
       const data = await res.json();
       if (res.ok) {
-        setAllDevices(Array.isArray(data) ? data : []);
-        // Only load devices that have a 'slot' assigned into the active grid
-        setSlots(data.filter(d => d.slot !== undefined));
+        const devices = Array.isArray(data) ? data : [];
+        setAllDevices(devices);
+        // Sync the grid slots with the database
+        setSlots(devices.filter(d => d.slot !== undefined && d.slot !== null));
       }
     } catch (err) {
       console.error("Fetch error:", err);
@@ -31,8 +32,10 @@ export default function LiveVideo() {
   };
 
   const handleAttachCamera = async (device) => {
+    // Prevent attaching offline cameras
+    if (device.status !== "Online") return;
+
     try {
-      // Update the device in the DB to assign it to this specific grid slot
       const res = await fetch(`${API_URL}/${device._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -50,7 +53,6 @@ export default function LiveVideo() {
 
   const handleDetachCamera = async (device) => {
     try {
-      // Remove the slot assignment from the DB
       await fetch(`${API_URL}/${device._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -62,7 +64,7 @@ export default function LiveVideo() {
     }
   };
 
-  const getDeviceInSlot = (slotId) => slots.find((s) => s.slot === slotId);
+  const getDeviceInSlot = (slotId) => slots.find((s) => Number(s.slot) === Number(slotId));
 
   return (
     <div className="vms-main-wrapper">
@@ -87,12 +89,13 @@ export default function LiveVideo() {
                       <span className="rec-dot"><FaCircle size={8} /> LIVE</span>
                       <span>{device.deviceName}</span>
                     </div>
-                    <FaTrash className="delete-icon" onClick={() => handleDetachCamera(device)} />
+                    <FaTrash className="delete-icon" onClick={() => handleDetachCamera(device)} title="Unlink Camera" />
                   </div>
                   <div className="video-content">
-                    <video src={device.streamUrl} autoPlay muted className="live-video-player" />
+                    <video src={device.streamUrl} autoPlay muted loop className="live-video-player" />
                   </div>
                   <div className="video-footer">
+                    <span className={`status-indicator ${device.status.toLowerCase()}`}></span>
                     {device.status} • {device.deviceSerial}
                   </div>
                 </div>
@@ -106,29 +109,42 @@ export default function LiveVideo() {
         })}
       </div>
 
-      {/* SELECTION MODAL */}
       {isModalOpen && (
         <div className="vms-popup-overlay">
           <div className="vms-popup-box">
             <div className="vms-popup-header">
-              <h3>Select Online Camera (Slot {selectedSlot})</h3>
+              <h3>Select Camera (Slot {selectedSlot})</h3>
               <FaTimes className="close-icon" onClick={() => setIsModalOpen(false)} />
             </div>
             
             <div className="camera-list">
               {allDevices
-                .filter(d => !d.slot) // Only show cameras not already in the grid
-                .map(device => (
-                  <div key={device._id} className="camera-item" onClick={() => handleAttachCamera(device)}>
-                    <div className="cam-info">
-                      <FaVideo color={device.status === "Online" ? "#00ff00" : "#666"} />
-                      <strong>{device.deviceName}</strong>
-                      <span>{device.deviceSerial}</span>
+                .filter(d => !d.slot) 
+                .sort((a, b) => (a.status === 'Online' ? -1 : 1))
+                .map(device => {
+                  const isOnline = device.status === "Online";
+                  return (
+                    <div 
+                      key={device._id} 
+                      className={`camera-item ${!isOnline ? 'offline-item' : ''}`} 
+                      onClick={() => handleAttachCamera(device)}
+                    >
+                      <div className="cam-info">
+                        <FaVideo color={isOnline ? "#00ff00" : "#ff4444"} />
+                        <div>
+                          <strong>{device.deviceName}</strong>
+                          <span>{device.deviceSerial}</span>
+                        </div>
+                      </div>
+                      <div className="item-action">
+                        {isOnline ? <FaLink className="link-icon" /> : <span className="offline-tag">OFFLINE</span>}
+                      </div>
                     </div>
-                    <FaLink className="link-icon" />
-                  </div>
-                ))}
-              {allDevices.filter(d => !d.slot).length === 0 && <p>No unassigned cameras found.</p>}
+                  );
+                })}
+              {allDevices.filter(d => !d.slot).length === 0 && (
+                <p className="no-cameras">No available cameras found in database.</p>
+              )}
             </div>
           </div>
         </div>
