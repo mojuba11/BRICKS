@@ -12,7 +12,7 @@ function UserManagement() {
   const [form, setForm] = useState({
     userId: "",
     userName: "",
-    email: "", // Added Email
+    email: "",
     password: "",
     confirmPassword: "",
     phone: "",
@@ -25,7 +25,6 @@ function UserManagement() {
     state: "Enable"
   });
 
-  // Fetch data from Render Backend on mount
   useEffect(() => {
     loadData();
   }, []);
@@ -37,11 +36,14 @@ function UserManagement() {
         userAPI.getAll(),
         userAPI.getDepartments()
       ]);
+      
+      console.log("Departments from backend:", deptRes.data); // DEBUG: Check keys here
+      
       setUsers(userRes.data);
       setDepartments(deptRes.data);
     } catch (err) {
       console.error("Fetch error:", err);
-      alert("Connect to backend failed. Please ensure the Render service is awake.");
+      // Removed alert to prevent annoying popups while Render is waking up
     } finally {
       setLoading(false);
     }
@@ -56,11 +58,12 @@ function UserManagement() {
 
     try {
       if (editing) {
-        await userAPI.update(editing.id, form);
+        // Use editing._id or editing.id based on backend
+        await userAPI.update(editing._id || editing.id, form);
       } else {
         await userAPI.create(form);
       }
-      loadData(); // Refresh list after save
+      loadData(); 
       closeModal();
     } catch (err) {
       alert(err.response?.data?.message || "Failed to save user.");
@@ -71,7 +74,7 @@ function UserManagement() {
     if (window.confirm("Delete this user permanently?")) {
       try {
         await userAPI.delete(id);
-        setUsers(users.filter(u => u.id !== id));
+        setUsers(users.filter(u => (u._id || u.id) !== id));
       } catch (err) {
         alert("Delete failed.");
       }
@@ -92,7 +95,6 @@ function UserManagement() {
 
   return (
     <div className="user-page">
-      {/* ... Query section ... */}
       <div className="action-btns">
          <button className="add-btn" onClick={() => setShowModal(true)}>+ Add user</button>
       </div>
@@ -110,23 +112,27 @@ function UserManagement() {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.userId}</td>
-                <td>{user.userName}</td>
-                <td>{user.email}</td>
-                <td>{user.dept}</td>
-                <td>{user.state}</td>
-                <td>
-                  <button className="modify-btn" onClick={() => {
-                    setEditing(user);
-                    setForm({...user, password: "", confirmPassword: ""});
-                    setShowModal(true);
-                  }}>Modify</button>
-                  <button className="delete-btn" onClick={() => handleDelete(user.id)}>Delete</button>
-                </td>
-              </tr>
-            ))}
+            {users.length > 0 ? (
+              users.map((user) => (
+                <tr key={user._id || user.id}>
+                  <td>{user.userId}</td>
+                  <td>{user.userName}</td>
+                  <td>{user.email}</td>
+                  <td>{user.dept}</td>
+                  <td>{user.state}</td>
+                  <td>
+                    <button className="modify-btn" onClick={() => {
+                      setEditing(user);
+                      setForm({...user, password: "", confirmPassword: ""});
+                      setShowModal(true);
+                    }}>Modify</button>
+                    <button className="delete-btn" onClick={() => handleDelete(user._id || user.id)}>Delete</button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr><td colSpan="6">No users found.</td></tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -157,11 +163,28 @@ function UserManagement() {
                   <select required value={form.dept} onChange={(e) => setForm({...form, dept: e.target.value})}>
                     <option value="">Select Dept</option>
                     {departments.map(d => (
-                      <option key={d.id} value={d.deptName}>{d.deptName}</option>
+                      <option key={d._id || d.id} value={d.name || d.deptName}>
+                        {d.name || d.deptName}
+                      </option>
                     ))}
                   </select>
                 </div>
-                {/* Add other form fields here similar to User ID */}
+                <div className="form-item">
+                  <label>* Password</label>
+                  <input type="password" required={!editing} value={form.password} onChange={(e) => setForm({...form, password: e.target.value})} />
+                </div>
+                <div className="form-item">
+                  <label>* Confirm Password</label>
+                  <input type="password" required={!editing} value={form.confirmPassword} onChange={(e) => setForm({...form, confirmPassword: e.target.value})} />
+                </div>
+                <div className="form-item">
+                  <label>Phone Number</label>
+                  <input type="text" value={form.phone} onChange={(e) => setForm({...form, phone: e.target.value})} />
+                </div>
+                <div className="form-item">
+                  <label>Device ID</label>
+                  <input type="text" value={form.deviceId} onChange={(e) => setForm({...form, deviceId: e.target.value})} />
+                </div>
               </div>
               <div className="card-footer">
                 <button type="submit" className="confirm-btn">Confirm</button>
