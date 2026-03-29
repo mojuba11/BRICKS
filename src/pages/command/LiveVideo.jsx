@@ -9,7 +9,9 @@ export default function LiveVideo() {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [newDevice, setNewDevice] = useState({ name: "", url: "" });
 
-  const API_URL = import.meta.env.VITE_API_BASE_URL || "https://bricks-backend-7wnv.onrender.com";
+  // Use the singular /api/device to match your backend fix
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://bricks-backend-7wnv.onrender.com";
+  const API_URL = `${API_BASE}/api/device`; 
 
   useEffect(() => {
     fetchDevices();
@@ -17,9 +19,10 @@ export default function LiveVideo() {
 
   const fetchDevices = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/devices`);
+      const res = await fetch(API_URL);
       const data = await res.json();
-      if (res.ok) setDevices(data);
+      // Ensure we set an array even if empty
+      if (res.ok) setDevices(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Fetch error:", err);
     }
@@ -33,10 +36,16 @@ export default function LiveVideo() {
   const saveDevice = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${API_URL}/api/devices`, {
+      const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...newDevice, slot: selectedSlot }),
+        // Mapping 'name' to 'deviceName' and 'url' to 'streamUrl' to match your DB schema
+        body: JSON.stringify({ 
+          deviceName: newDevice.name, 
+          streamUrl: newDevice.url, 
+          slot: selectedSlot,
+          deviceId: `CAM-${selectedSlot}-${Date.now().toString().slice(-4)}` // Auto-gen ID
+        }),
       });
       if (res.ok) {
         fetchDevices();
@@ -73,12 +82,25 @@ export default function LiveVideo() {
           return (
             <div key={slotId} className="vms-card">
               {device ? (
-                <div className="vms-video-placeholder">
+                <div className="vms-video-container">
                   <div className="video-header">
-                    <span>{device.name}</span>
-                    <FaVideo color="#00ff00" />
+                    <span>{device.deviceName}</span>
+                    <FaVideo color={device.streamUrl ? "#00ff00" : "#ff0000"} />
                   </div>
-                  <div className="video-content"><p>LIVE STREAM</p></div>
+                  <div className="video-content">
+                    {device.streamUrl ? (
+                      <video 
+                        src={device.streamUrl} 
+                        autoPlay 
+                        muted 
+                        loop 
+                        className="live-video-player"
+                        onError={(e) => console.log("Video format not supported natively")}
+                      />
+                    ) : (
+                      <p className="no-signal">NO SIGNAL</p>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <button className="top-right-add-btn" onClick={() => handleAddClick(slotId)}>
@@ -90,7 +112,7 @@ export default function LiveVideo() {
         })}
       </div>
 
-      {/* 3. THE POPUP MODAL (Must be outside the grid container) */}
+      {/* 3. MODAL POPUP */}
       {isModalOpen && (
         <div className="vms-popup-overlay">
           <div className="vms-popup-box">
@@ -107,12 +129,12 @@ export default function LiveVideo() {
                 placeholder="e.g. BodyCam North"
                 required 
               />
-              <label>RTSP/Stream URL</label>
+              <label>Stream URL (HLS/MP4/WebRTC)</label>
               <input 
                 type="text" 
                 value={newDevice.url}
                 onChange={(e) => setNewDevice({...newDevice, url: e.target.value})}
-                placeholder="rtsp://192.168..."
+                placeholder="https://example.com/stream.m3u8"
                 required 
               />
               <div className="vms-popup-actions">
