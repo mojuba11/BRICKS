@@ -54,7 +54,7 @@ td { padding: 10px; border-bottom: 1px solid #eee; }
 
 .map-search { border: 1px solid #ddd; padding: 8px; width: 250px; outline: none; }
 .map-btn { border: none; padding: 8px 15px; color: white; cursor: pointer; font-size: 13px; font-weight: 500; }
-.map-btn.teal { background: #009688; }
+.map-btn.teal { background: #C4A484; }
 .map-btn.orange { background: #f39c12; }
 .map-btn.blue { background: #2196f3; }
 
