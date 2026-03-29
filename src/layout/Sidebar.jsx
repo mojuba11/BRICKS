@@ -5,7 +5,7 @@ import {
   FaTachometerAlt,
   FaMap,
   FaChartBar,
-   FaSearch,
+  FaSearch,
   FaFolderOpen,
   FaHistory,
   FaDownload
