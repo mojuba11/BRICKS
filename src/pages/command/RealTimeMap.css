@@ -1,0 +1,86 @@
+/* --- MAP CONTAINER --- */
+.map-wrapper {
+  padding: 20px;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  color: #c2a078;
+}
+
+.map-container {
+  border: 2px solid #333;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* --- LIGHT BROWN PULSING MARKER --- */
+.custom-pulsing-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pulse-dot {
+  width: 14px;
+  height: 14px;
+  background: #c2a078;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  position: absolute;
+  z-index: 2;
+  box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.pulse-ring {
+  border: 4px solid #c2a078;
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+  position: absolute;
+  animation: map-pulsate 1.8s ease-out infinite;
+  opacity: 0;
+  z-index: 1;
+}
+
+@keyframes map-pulsate {
+  0% {
+    transform: scale(0.1, 0.1);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.5, 1.5);
+    opacity: 0;
+  }
+}
+
+/* --- POPUP STYLING --- */
+.leaflet-popup-content-wrapper {
+  background: #2a2a2a !important;
+  color: #eee !important;
+  border-radius: 8px !important;
+  border: 1px solid #444;
+}
+
+.leaflet-popup-tip {
+  background: #2a2a2a !important;
+}
+
+.popup-content strong {
+  color: #c2a078;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.live-badge {
+  color: #ff4444;
+  font-weight: bold;
+  font-size: 10px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
