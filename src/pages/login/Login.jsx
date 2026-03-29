@@ -4,7 +4,7 @@ import { FaEye, FaEyeSlash, FaCheckCircle } from "react-icons/fa";
 import "./Login.css";
 
 const Login = ({ setAuth }) => {
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(""); // This will be used as the 'email'
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -15,6 +15,7 @@ const Login = ({ setAuth }) => {
     e.preventDefault();
     setIsLoading(true);
 
+    // Dynamic API URL logic
     const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || "https://bricks-backend-7wnv.onrender.com";
     const API_URL = rawBaseUrl.endsWith("/") ? rawBaseUrl.slice(0, -1) : rawBaseUrl;
 
@@ -23,7 +24,7 @@ const Login = ({ setAuth }) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: username, 
+          email: username, // Mapping the 'username' input to 'email' field for backend
           password: password,
         }),
       });
@@ -31,21 +32,34 @@ const Login = ({ setAuth }) => {
       const data = await response.json();
 
       if (response.ok) {
+        // 1. Store Auth Info
         localStorage.setItem("isAuthenticated", "true");
-        if (data.token) localStorage.setItem("token", data.token);
+        
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+        }
+        
+        // 2. Store User Info (Useful for displaying "Welcome, Admin" on dashboard)
+        if (data.userName) {
+          localStorage.setItem("userName", data.userName);
+        }
+
         setLoginSuccess(true);
+
+        // 3. Brief delay for the success animation, then redirect
         setTimeout(() => {
           setAuth(true);
           navigate("/map");
         }, 1500);
       } else {
-        alert(data.message || "Invalid username or password.");
+        // Stop loading so user can try again
         setIsLoading(false);
+        alert(data.message || "Invalid credentials. Please try again.");
       }
     } catch (error) {
       console.error("Login Error:", error);
-      alert("Cannot reach the server. Please try again.");
       setIsLoading(false);
+      alert("Cannot connect to Bricks server. Please check your connection.");
     }
   };
 
@@ -72,7 +86,7 @@ const Login = ({ setAuth }) => {
           <div className="input-group">
             <input
               type="text"
-              placeholder="Username"
+              placeholder="Email Address"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
