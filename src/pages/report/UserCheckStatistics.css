@@ -3,8 +3,8 @@
 .query-group { display: flex; gap: 10px; flex-wrap: wrap; }
 .query-group input, .query-group select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
 
-.query-btn { background: #009688; color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; }
-.export-btn { background: #2196f3; color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; }
+.query-btn { background: #C4A484; color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; }
+.export-btn { background: #C4A484; color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; }
 
 .table-wrapper { background: white; border-radius: 4px; overflow-x: auto; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 table { width: 100%; border-collapse: collapse; font-size: 14px; }

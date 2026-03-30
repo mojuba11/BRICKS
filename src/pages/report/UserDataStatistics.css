@@ -34,7 +34,7 @@
 }
 
 .query-btn {
-  background-color: #009688;
+  background-color: #C4A484;
   color: white;
   border: none;
   padding: 8px 20px;
@@ -43,7 +43,7 @@
 }
 
 .export-btn {
-  background-color: #2196f3;
+  background-color: #C4A484;
   color: white;
   border: none;
   padding: 8px 20px;
@@ -86,7 +86,7 @@ td {
 }
 
 .save-badge {
-  background-color: #2196f3;
+  background-color: #C4A484;
   color: white;
   padding: 3px 8px;
   border-radius: 4px;

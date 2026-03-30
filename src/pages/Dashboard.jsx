@@ -9,7 +9,7 @@ function Dashboard() {
   return (
     <div className="tactical-dashboard">
       <header className="dashboard-header">
-        <h1>DISPATCH  <span className="bronze-text">COMMAND</span></h1>
+        <h1>DISPATCH <span className="bronze-text">COMMAND</span></h1>
         <div className="system-status">
           <span className="pulse-dot"></span> SYSTEM OPERATIONAL
         </div>

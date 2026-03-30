@@ -1,7 +1,7 @@
 .time-stats-container { padding: 20px; background-color: #f4f6f8; min-height: 100vh; }
 .stats-header { background: white; padding: 15px; border-radius: 4px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 .query-group { display: flex; gap: 10px; }
-.query-btn { background: #009688; color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; }
+.query-btn { background: #C4A484; color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; }
 .stats-card { background: white; padding: 30px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
 .title { font-size: 22px; color: #333; font-weight: bold; }
