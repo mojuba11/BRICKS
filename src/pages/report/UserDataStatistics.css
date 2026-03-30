@@ -1,6 +1,6 @@
 .stats-container {
   padding: 20px;
-  background-color: #f4f6f8;
+  background-color: #e3e9ef;
   min-height: 100vh;
 }
 
@@ -81,7 +81,7 @@ td {
 .no-data-cell {
   text-align: center;
   padding: 40px !important;
-  color: #999;
+  color: #1c1b1b;
   font-style: italic;
 }
 
