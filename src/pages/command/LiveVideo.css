@@ -2,7 +2,7 @@
 .vms-main-wrapper {
   display: flex;
   height: 85vh;
-  background-color: #1a1a1a;
+  background-color: #111;
   padding: 10px;
   gap: 10px;
 }
@@ -14,168 +14,103 @@
 }
 
 .vms-controls button {
-  width: 45px;
-  height: 45px;
-  background: #2a2a2a;
+  width: 50px;
+  height: 50px;
+  background: #222;
   color: #fff;
   border: 1px solid #444;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
-  transition: all 0.2s;
 }
 
-/* Updated to Light Brown */
 .vms-controls button.active {
   background-color: #c2a078; 
   border-color: #d4b895;
-  box-shadow: 0 0 10px rgba(194, 160, 120, 0.4);
 }
 
-/* --- GRID SETUP --- */
+/* --- GRID --- */
 .vms-grid-container {
   flex-grow: 1;
   display: grid;
   background-color: #000; 
-  gap: 2px; 
-  border: 2px solid #333;
+  gap: 4px; 
 }
-
-.grid-size-1 { grid-template-columns: 1fr; grid-template-rows: 1fr; }
-.grid-size-4 { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); }
-.grid-size-9 { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); }
-.grid-size-16 { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); }
 
 .vms-card {
-  background-color: #000;
+  background-color: #1a1a1a;
   position: relative;
-  overflow: hidden;
-  border: 1px solid #222;
-}
-
-/* --- VIDEO HEADER --- */
-.video-header {
-  background: rgba(0, 0, 0, 0.8);
-  padding: 6px 10px;
-  font-size: 11px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: absolute;
-  top: 0;
-  width: 100%;
-  z-index: 5;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: #eee;
-}
-
-.rec-dot {
-  color: #ff4444;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  text-transform: uppercase;
-  font-size: 10px;
-  animation: blink 1.5s infinite;
-}
-
-@keyframes blink {
-  0% { opacity: 1; }
-  50% { opacity: 0.3; }
-  100% { opacity: 1; }
-}
-
-/* --- VIDEO FOOTER --- */
-.video-footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  color: #c2a078; /* Light brown text for subtle branding */
-  font-size: 9px;
-  padding: 3px 8px;
-  font-family: monospace;
-}
-
-/* --- LIGHT BROWN ADD BUTTON --- */
-.top-right-add-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background-color: #c2a078;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  border-bottom-left-radius: 8px;
-  font-size: 12px;
-  transition: background 0.3s;
-}
-
-.top-right-add-btn:hover {
-  background-color: #ab8b64;
-}
-
-/* --- POPUP / SELECTION LIST --- */
-.vms-popup-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.vms-popup-box {
-  background: #fff;
-  padding: 24px;
-  border-radius: 12px;
-  width: 450px;
-  max-height: 80vh;
+  border: 1px solid #333;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);
-  color: #333;
+}
+
+/* --- VIDEO CONTAINER --- */
+.vms-video-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.video-content {
+  flex: 1; /* Takes all available middle space */
+  position: relative;
+  background: #000;
+  overflow: hidden;
+}
+
+.live-video-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.add-slot-placeholder {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: #444;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.add-slot-placeholder:hover {
+  background: #222;
+  color: #c2a078;
+}
+
+/* --- MODAL --- */
+.camera-list {
+  margin-top: 15px;
+  overflow-y: auto;
+}
+
+.camera-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  border: 1px solid #eee;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
 .camera-item:hover {
   background: #fcf9f5;
   border-color: #c2a078;
-  transform: translateY(-1px);
 }
 
-.link-icon {
-  color: #c2a078;
-  font-size: 14px;
-  opacity: 0.5;
-}
-
-.camera-item:hover .link-icon {
-  opacity: 1;
-}
-
-/* --- NEW STATUS STYLES --- */
-.camera-item.offline-item {
-  opacity: 0.6;
-  cursor: not-allowed;
-  background: #f3f4f6;
-}
-
-.offline-tag {
-  font-size: 9px;
-  font-weight: bold;
-  color: #9ca3af;
-  background: #e5e7eb;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
+.spinning { animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
