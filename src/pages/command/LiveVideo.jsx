@@ -14,7 +14,7 @@ export default function LiveVideo() {
 
   useEffect(() => {
     fetchDevices();
-    const interval = setInterval(fetchDevices, 10000); // Faster sync for live status
+    const interval = setInterval(fetchDevices, 15000);
     return () => clearInterval(interval);
   }, []);
 
@@ -32,16 +32,11 @@ export default function LiveVideo() {
   };
 
   const handleAttachCamera = async (device) => {
-    if (device.status !== "Online") {
-      alert("This camera is currently offline.");
-      return;
-    }
-
     try {
       const res = await fetch(`${API_URL}/${device._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slot: selectedSlot.toString() }), // Store slot as string
+        body: JSON.stringify({ slot: selectedSlot }), 
       });
 
       if (res.ok) {
@@ -67,13 +62,12 @@ export default function LiveVideo() {
   };
 
   const getDeviceInSlot = (slotId) =>
-    allDevices.find((d) => d.slot && Number(d.slot) === Number(slotId));
+    allDevices.find((d) => d.slot !== null && Number(d.slot) === Number(slotId));
 
   const renderStream = (device) => {
     const url = device.streamUrl;
-    if (!url) return <div className="no-stream-msg">No Stream URL</div>;
+    if (!url) return <div className="no-stream">No Stream</div>;
 
-    // Handle RTSP.me or other embeds
     if (url.includes("rtsp.me") || url.includes("embed")) {
       return (
         <iframe
@@ -82,64 +76,59 @@ export default function LiveVideo() {
           frameBorder="0"
           allow="autoplay; encrypted-media"
           allowFullScreen
-          title={device.deviceName}
         />
       );
     }
 
-    // Default to Image/MJPEG for DroidCam local testing or standard video
     return (
       <img
         src={url}
         className="live-video-player"
-        alt="Live Stream"
-        onError={(e) => { e.target.src = "https://via.placeholder.com/300?text=Offline"; }}
+        alt="Live"
+        onError={(e) => { e.target.src = "https://via.placeholder.com/400x300?text=Camera+Offline"; }}
       />
     );
   };
 
   return (
     <div className="vms-main-wrapper">
-      <div className="vms-controls">
-        {[1, 4, 9, 16].map((num) => (
-          <button key={num} onClick={() => setGridSize(num)} className={gridSize === num ? "active" : ""}>
-            {num}
+      {/* SIDEBAR CONTROLS */}
+      <div className="vms-sidebar">
+        <div className="vms-controls">
+          {[1, 4, 9, 16].map((num) => (
+            <button key={num} onClick={() => setGridSize(num)} className={gridSize === num ? "active" : ""}>
+              {num}
+            </button>
+          ))}
+          <button className="refresh-btn" onClick={fetchDevices} disabled={loading}>
+            <FaSync className={loading ? "spinning" : ""} />
           </button>
-        ))}
-        <button className="refresh-btn" onClick={fetchDevices} disabled={loading}>
-          <FaSync className={loading ? "spinning" : ""} />
-        </button>
+        </div>
       </div>
 
+      {/* THE GRID */}
       <div className={`vms-grid-container grid-size-${gridSize}`}>
         {Array.from({ length: gridSize }, (_, i) => i + 1).map((slotId) => {
           const device = getDeviceInSlot(slotId);
-
           return (
             <div key={slotId} className="vms-card">
               {device ? (
                 <div className="vms-video-container">
                   <div className="video-header">
                     <div className="header-left">
-                      <span className="rec-dot"><FaCircle size={8} /> LIVE</span>
-                      <span className="device-name-text">{device.deviceName}</span>
+                      <FaCircle className="rec-dot" size={8} /> <span>{device.deviceName}</span>
                     </div>
                     <FaTrash className="delete-icon" onClick={() => handleDetachCamera(device)} />
                   </div>
-                  
-                  <div className="video-content">
-                    {renderStream(device)}
-                  </div>
-
+                  <div className="video-content">{renderStream(device)}</div>
                   <div className="video-footer">
-                    <span className={`status-indicator ${device.status.toLowerCase()}`}></span>
                     {device.status} • {device.deviceId}
                   </div>
                 </div>
               ) : (
                 <button className="add-slot-placeholder" onClick={() => { setSelectedSlot(slotId); setIsModalOpen(true); }}>
-                  <FaPlus size={24} />
-                  <span>Link {slotId}</span>
+                  <FaPlus size={20} />
+                  <span>Slot {slotId}</span>
                 </button>
               )}
             </div>
@@ -147,26 +136,24 @@ export default function LiveVideo() {
         })}
       </div>
 
+      {/* POPUP */}
       {isModalOpen && (
         <div className="vms-popup-overlay">
           <div className="vms-popup-box">
             <div className="vms-popup-header">
               <h3>Link Camera to Slot {selectedSlot}</h3>
-              <FaTimes className="close-icon" onClick={() => setIsModalOpen(false)} />
+              <FaTimes onClick={() => setIsModalOpen(false)} style={{cursor:'pointer'}} />
             </div>
             <div className="camera-list">
-              {allDevices
-                .filter((d) => !d.slot)
-                .map((device) => (
-                  <div key={device._id} className={`camera-item ${device.status !== "Online" ? "offline-item" : ""}`} onClick={() => handleAttachCamera(device)}>
-                    <FaVideo />
-                    <div className="cam-details">
-                      <strong>{device.deviceName}</strong>
-                      <small>{device.deviceId} - {device.status}</small>
-                    </div>
+              {allDevices.filter(d => !d.slot).map(device => (
+                <div key={device._id} className="camera-item" onClick={() => handleAttachCamera(device)}>
+                  <FaVideo />
+                  <div>
+                    <strong>{device.deviceName}</strong>
+                    <p style={{margin:0, fontSize:'12px'}}>{device.deviceId}</p>
                   </div>
-                ))}
-              {allDevices.filter((d) => !d.slot).length === 0 && <p style={{textAlign:'center', padding: '20px'}}>No available cameras.</p>}
+                </div>
+              ))}
             </div>
           </div>
         </div>
