@@ -12,5 +12,5 @@ th { background-color: #f8f9fa; padding: 12px; text-align: left; color: #888; bo
 td { padding: 12px; border-bottom: 1px solid #eee; }
 
 .status-tag { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }
-.status-tag.normal { background: #e8f5e9; color: #2e7d32; }
+.status-tag.normal { background: #e8f5e9; color: #000000; }
 .status-tag.late { background: #fff3e0; color: #ef6c00; }

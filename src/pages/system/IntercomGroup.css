@@ -31,9 +31,9 @@
   flex: 1;
 }
 
-.query-btn { background: #009688; color: white; border: none; padding: 6px 15px; border-radius: 4px; cursor: pointer; }
-.add-btn { background: #2196f3; color: white; border: none; padding: 6px 15px; border-radius: 4px; cursor: pointer; }
-.add-person-btn { background: #2196f3; color: white; border: none; padding: 6px 15px; border-radius: 4px; cursor: pointer; }
+.query-btn { background: #C4A484; color: white; border: none; padding: 6px 15px; border-radius: 4px; cursor: pointer; }
+.add-btn { background: #C4A484; color: white; border: none; padding: 6px 15px; border-radius: 4px; cursor: pointer; }
+.add-person-btn { background: #C4A484; color: white; border: none; padding: 6px 15px; border-radius: 4px; cursor: pointer; }
 .batch-delete-btn { background: #ff5722; color: white; border: none; padding: 6px 15px; border-radius: 4px; margin-bottom: 10px; cursor: pointer; }
 
 .table-wrapper { overflow-y: auto; flex: 1; border: 1px solid #eee; }
@@ -63,5 +63,5 @@ td { padding: 10px; border-bottom: 1px solid #eee; }
 .form-item input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
 
 .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px; }
-.confirm-btn { background: #2196f3; color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; }
+.confirm-btn { background: #C4A484; color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; }
 .cancel-btn { background: #f5f5f5; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; }
