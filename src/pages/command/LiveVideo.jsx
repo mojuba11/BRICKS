@@ -1,38 +1,40 @@
 import React, { useState, useEffect } from "react";
-import { FaExpand, FaPlus, FaVideo, FaTimes, FaTrash, FaCircle, FaLink } from "react-icons/fa";
+import { FaExpand, FaPlus, FaVideo, FaTimes, FaTrash, FaCircle, FaLink, FaSync } from "react-icons/fa";
 import "./LiveVideo.css";
 
 export default function LiveVideo() {
   const [gridSize, setGridSize] = useState(16);
-  const [slots, setSlots] = useState([]); 
   const [allDevices, setAllDevices] = useState([]); 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://bricks-backend-7wnv.onrender.com";
   const API_URL = `${API_BASE}/api/device`; 
 
   useEffect(() => {
     fetchDevices();
+    // Auto-refresh every 30 seconds to sync status
+    const interval = setInterval(fetchDevices, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const fetchDevices = async () => {
     try {
+      setLoading(true);
       const res = await fetch(API_URL);
       const data = await res.json();
       if (res.ok) {
-        const devices = Array.isArray(data) ? data : [];
-        setAllDevices(devices);
-        // Sync the grid slots with the database
-        setSlots(devices.filter(d => d.slot !== undefined && d.slot !== null));
+        setAllDevices(Array.isArray(data) ? data : []);
       }
     } catch (err) {
       console.error("Fetch error:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleAttachCamera = async (device) => {
-    // Prevent attaching offline cameras
     if (device.status !== "Online") return;
 
     try {
@@ -64,17 +66,24 @@ export default function LiveVideo() {
     }
   };
 
-  const getDeviceInSlot = (slotId) => slots.find((s) => Number(s.slot) === Number(slotId));
+  const getDeviceInSlot = (slotId) => allDevices.find((d) => Number(d.slot) === Number(slotId));
 
   return (
     <div className="vms-main-wrapper">
-      <div className="vms-controls">
-        {[1, 4, 9, 16].map((num) => (
-          <button key={num} onClick={() => setGridSize(num)} className={gridSize === num ? "active" : ""}>
-            {num}
+      <div className="vms-header">
+        <div className="vms-controls">
+          {[1, 4, 9, 16].map((num) => (
+            <button key={num} onClick={() => setGridSize(num)} className={gridSize === num ? "active" : ""}>
+              {num}
+            </button>
+          ))}
+          <button className="refresh-btn" onClick={fetchDevices} disabled={loading}>
+            <FaSync className={loading ? "spinning" : ""} />
           </button>
-        ))}
-        <button className="expand-btn"><FaExpand size={12} /></button>
+        </div>
+        <div className="vms-stats">
+          Online: {allDevices.filter(d => d.status === "Online").length} / {allDevices.length}
+        </div>
       </div>
 
       <div className={`vms-grid-container grid-size-${gridSize}`}>
@@ -87,21 +96,31 @@ export default function LiveVideo() {
                   <div className="video-header">
                     <div className="header-left">
                       <span className="rec-dot"><FaCircle size={8} /> LIVE</span>
-                      <span>{device.deviceName}</span>
+                      <span className="device-name-text">{device.deviceName}</span>
                     </div>
-                    <FaTrash className="delete-icon" onClick={() => handleDetachCamera(device)} title="Unlink Camera" />
+                    <FaTrash className="delete-icon" onClick={() => handleDetachCamera(device)} title="Unlink" />
                   </div>
                   <div className="video-content">
-                    <video src={device.streamUrl} autoPlay muted loop className="live-video-player" />
+                    {device.streamUrl?.includes("rtsp.me") ? (
+                      <iframe 
+                        src={device.streamUrl} 
+                        frameBorder="0" 
+                        allowFullScreen 
+                        className="live-video-player"
+                      />
+                    ) : (
+                      <video src={device.streamUrl} autoPlay muted loop className="live-video-player" />
+                    )}
                   </div>
                   <div className="video-footer">
                     <span className={`status-indicator ${device.status.toLowerCase()}`}></span>
-                    {device.status} • {device.deviceSerial}
+                    {device.status} • {device.deviceId}
                   </div>
                 </div>
               ) : (
-                <button className="top-right-add-btn" onClick={() => { setSelectedSlot(slotId); setIsModalOpen(true); }}>
-                  <FaPlus size={10} /> <span>Link Camera</span>
+                <button className="add-slot-placeholder" onClick={() => { setSelectedSlot(slotId); setIsModalOpen(true); }}>
+                  <FaPlus size={20} />
+                  <span>Link Camera</span>
                 </button>
               )}
             </div>
@@ -113,7 +132,7 @@ export default function LiveVideo() {
         <div className="vms-popup-overlay">
           <div className="vms-popup-box">
             <div className="vms-popup-header">
-              <h3>Select Camera (Slot {selectedSlot})</h3>
+              <h3>Select Camera for Slot {selectedSlot}</h3>
               <FaTimes className="close-icon" onClick={() => setIsModalOpen(false)} />
             </div>
             
@@ -127,13 +146,13 @@ export default function LiveVideo() {
                     <div 
                       key={device._id} 
                       className={`camera-item ${!isOnline ? 'offline-item' : ''}`} 
-                      onClick={() => handleAttachCamera(device)}
+                      onClick={() => isOnline && handleAttachCamera(device)}
                     >
                       <div className="cam-info">
                         <FaVideo color={isOnline ? "#00ff00" : "#ff4444"} />
-                        <div>
+                        <div className="text-info">
                           <strong>{device.deviceName}</strong>
-                          <span>{device.deviceSerial}</span>
+                          <small>{device.deviceId}</small>
                         </div>
                       </div>
                       <div className="item-action">
@@ -143,7 +162,7 @@ export default function LiveVideo() {
                   );
                 })}
               {allDevices.filter(d => !d.slot).length === 0 && (
-                <p className="no-cameras">No available cameras found in database.</p>
+                <p className="no-cameras">No available cameras to link.</p>
               )}
             </div>
           </div>
