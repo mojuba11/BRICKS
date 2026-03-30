@@ -2,21 +2,21 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./DeviceManagement.css";
 
-// Use environment variable for the backend URL
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://bricks-backend-7wnv.onrender.com";
 const API_URL = `${API_BASE}/api/device`;
 const DEPT_URL = `${API_BASE}/api/departments`;
 
 const DeviceManagement = () => {
   const [devices, setDevices] = useState([]);
-  const [departments, setDepartments] = useState([]); // Added to sync with your system
+  const [departments, setDepartments] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingDevice, setEditingDevice] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const initialFormState = {
     deviceId: "", deviceName: "", capacity: "", firm: "", dept: "",
-    deviceState: "Normal", videoServer: "Video Server H264+AAC",
+    deviceState: "Normal", 
+    videoServer: "RTSP.me", // Updated default
     recordVideo: "No", gpsType: "WGS84", gpsInterval: "1000",
     enableFence: "No", fenceName: "", fenceAlarm: "No",
     hardwareSerial: "", deviceSerial: "", hardwareVersion: "",
@@ -33,10 +33,9 @@ const DeviceManagement = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      // Fetch both devices and departments at once
       const [devRes, deptRes] = await Promise.all([
         axios.get(API_URL),
-        axios.get(DEPT_URL).catch(() => ({ data: [] })) // Fallback if dept API fails
+        axios.get(DEPT_URL).catch(() => ({ data: [] }))
       ]);
       setDevices(devRes.data);
       setDepartments(deptRes.data);
@@ -70,7 +69,7 @@ const DeviceManagement = () => {
       }
       setShowModal(false);
     } catch (err) {
-      alert(err.response?.data?.message || "Operation failed. Ensure Backend model matches form fields.");
+      alert(err.response?.data?.message || "Operation failed.");
     }
   };
 
@@ -101,7 +100,7 @@ const DeviceManagement = () => {
             <tr>
               <th>ID</th>
               <th>Name</th>
-              <th>Dept</th>
+              <th>Server Type</th> {/* Added Column */}
               <th>Status</th>
               <th>Stream</th>
               <th>Operate</th>
@@ -109,12 +108,12 @@ const DeviceManagement = () => {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan="6" className="loading-cell">Loading Devices...</td></tr>
+              <tr><td colSpan="6" className="loading-cell">Loading...</td></tr>
             ) : devices.map((dev) => (
               <tr key={dev._id}>
                 <td>{dev.deviceId}</td>
                 <td>{dev.deviceName}</td>
-                <td>{dev.dept || "Unassigned"}</td>
+                <td><small>{dev.videoServer}</small></td> {/* Show Server Type */}
                 <td>
                   <span className={`state-pill ${dev.deviceState.toLowerCase()}`}>
                     {dev.deviceState}
@@ -146,12 +145,26 @@ const DeviceManagement = () => {
               <div className="form-grid">
                 <div className="input-group">
                   <label>Device ID</label>
-                  <input value={form.deviceId} onChange={(e) => setForm({...form, deviceId: e.target.value})} required placeholder="e.g. BC-001" />
+                  <input value={form.deviceId} onChange={(e) => setForm({...form, deviceId: e.target.value})} required />
                 </div>
                 <div className="input-group">
                   <label>Device Name</label>
                   <input value={form.deviceName} onChange={(e) => setForm({...form, deviceName: e.target.value})} required />
                 </div>
+
+                {/* --- NEW VIDEO SERVER DROPDOWN --- */}
+                <div className="input-group">
+                  <label>Video Server Type</label>
+                  <select value={form.videoServer} onChange={(e) => setForm({...form, videoServer: e.target.value})}>
+                    <option value="RTSP.me">RTSP.me (Cloud Embed)</option>
+                    <option value="DroidCam">DroidCam (Local IP)</option>
+                    <option value="YouTube">YouTube Live</option>
+                    <option value="Wowza">Wowza Cloud</option>
+                    <option value="AntMedia">Ant Media Server</option>
+                    <option value="Generic">Generic / Other</option>
+                  </select>
+                </div>
+
                 <div className="input-group">
                   <label>Department</label>
                   <select value={form.dept} onChange={(e) => setForm({...form, dept: e.target.value})}>
@@ -161,14 +174,19 @@ const DeviceManagement = () => {
                     ))}
                   </select>
                 </div>
+
                 <div className="input-group full-width">
                   <label>Live Stream URL</label>
                   <input 
-                    placeholder="rtsp://admin:password@ip:port" 
+                    placeholder="https://rtsp.me/embed/..." 
                     value={form.streamUrl} 
                     onChange={(e) => setForm({...form, streamUrl: e.target.value})} 
                   />
+                  <small style={{color: '#888', marginTop: '4px', display: 'block'}}>
+                    Paste your Embed Link (RTSP.me) or Local IP (DroidCam) here.
+                  </small>
                 </div>
+
                 <div className="input-group">
                   <label>GPS Standard</label>
                   <select value={form.gpsType} onChange={(e) => setForm({...form, gpsType: e.target.value})}>

@@ -36,7 +36,7 @@ export default function LiveVideo() {
       const res = await fetch(`${API_URL}/${device._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slot: String(selectedSlot) }), // Send as string for consistency
+        body: JSON.stringify({ slot: String(selectedSlot) }),
       });
 
       if (res.ok) {
@@ -64,12 +64,20 @@ export default function LiveVideo() {
   const getDeviceInSlot = (slotId) =>
     allDevices.find((d) => d.slot !== null && d.slot !== undefined && Number(d.slot) === Number(slotId));
 
+  // --- UPDATED RENDER LOGIC ---
   const renderStream = (device) => {
     const url = device.streamUrl;
+    const serverType = device.videoServer; // Use the new dropdown value
+
     if (!url) return <div className="no-stream">No Stream URL</div>;
 
-    // Handle RTSP.me, YouTube, or generic embeds
-    if (url.includes("rtsp.me") || url.includes("youtube.com") || url.includes("embed")) {
+    // 1. Handle Cloud/Embed Servers (RTSP.me, YouTube, Wowza)
+    if (
+      serverType === "RTSP.me" || 
+      serverType === "YouTube" || 
+      serverType === "Wowza" ||
+      url.includes("embed")
+    ) {
       return (
         <iframe
           key={device._id}
@@ -78,20 +86,30 @@ export default function LiveVideo() {
           frameBorder="0"
           allow="autoplay; encrypted-media; picture-in-picture"
           allowFullScreen
+          // CRITICAL: This helps authorize the stream on Vercel
+          referrerPolicy="no-referrer-when-downgrade"
         />
       );
     }
 
-    // Default to Image/MJPEG
-    return (
-      <img
-        key={device._id}
-        src={url}
-        className="live-video-player"
-        alt="Live Stream"
-        onError={(e) => { e.target.src = "https://via.placeholder.com/400x300?text=Camera+Offline"; }}
-      />
-    );
+    // 2. Handle Local MJPEG Servers (DroidCam)
+    if (serverType === "DroidCam" || serverType === "Generic") {
+      return (
+        <img
+          key={device._id}
+          src={url}
+          className="live-video-player"
+          alt="Live Stream"
+          style={{ objectFit: 'contain', backgroundColor: '#000' }}
+          onError={(e) => { 
+            e.target.src = "https://via.placeholder.com/400x300?text=Camera+Offline"; 
+          }}
+        />
+      );
+    }
+
+    // Default Fallback
+    return <div className="no-stream">Unsupported Config</div>;
   };
 
   return (
@@ -124,7 +142,7 @@ export default function LiveVideo() {
                   </div>
                   <div className="video-content">{renderStream(device)}</div>
                   <div className="video-footer">
-                    {device.status} • {device.deviceId}
+                    {device.deviceState} • {device.videoServer}
                   </div>
                 </div>
               ) : (
@@ -151,11 +169,13 @@ export default function LiveVideo() {
                   <FaVideo />
                   <div>
                     <strong>{device.deviceName}</strong>
-                    <p style={{margin:0, fontSize:'12px'}}>{device.deviceId}</p>
+                    <p style={{margin:0, fontSize:'12px'}}>{device.videoServer}</p>
                   </div>
                 </div>
               ))}
-              {allDevices.filter(d => !d.slot).length === 0 && <p style={{color:'#666', textAlign:'center', padding:'20px'}}>All cameras are already linked.</p>}
+              {allDevices.filter(d => !d.slot).length === 0 && (
+                <p style={{color:'#666', textAlign:'center', padding:'20px'}}>All cameras are already linked.</p>
+              )}
             </div>
           </div>
         </div>
