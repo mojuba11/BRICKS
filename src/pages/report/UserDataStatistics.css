@@ -2,6 +2,7 @@
   padding: 20px;
   background-color: #e3e9ef;
   min-height: 100vh;
+  color: #000000; /* Sets default text to black for the container */
 }
 
 .filter-section {
@@ -10,6 +11,7 @@
   border-radius: 4px;
   margin-bottom: 20px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  color: #000000; /* Ensures text inside filter section is black */
 }
 
 .input-row {
@@ -24,7 +26,8 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   min-width: 180px;
-  color: #666;
+  color: #000000; /* Changed from #666 to black for better visibility */
+  background-color: #fff;
   outline: none;
 }
 
@@ -33,18 +36,10 @@
   gap: 10px;
 }
 
-.query-btn {
+/* Buttons keep white text because their background is brown */
+.query-btn, .export-btn {
   background-color: #C4A484;
-  color: white;
-  border: none;
-  padding: 8px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.export-btn {
-  background-color: #C4A484;
-  color: white;
+  color: white; 
   border: none;
   padding: 8px 20px;
   border-radius: 4px;
@@ -62,13 +57,14 @@ table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
+  color: #000000; /* Ensures all table text is black */
 }
 
 th {
   background-color: #f8f9fa;
   padding: 12px;
   text-align: left;
-  color: #888;
+  color: #333; /* Changed from #888 to a dark bold color for headers */
   border-bottom: 2px solid #eee;
   white-space: nowrap;
 }
@@ -76,18 +72,19 @@ th {
 td {
   padding: 12px;
   border-bottom: 1px solid #eee;
+  color: #000000; /* Forces cell data to be black */
 }
 
 .no-data-cell {
   text-align: center;
   padding: 40px !important;
-  color: #1c1b1b;
+  color: #000000; /* Ensure "No Data" message is visible */
   font-style: italic;
 }
 
 .save-badge {
   background-color: #C4A484;
-  color: white;
+  color: white; /* Keeps white text for contrast on the badge */
   padding: 3px 8px;
   border-radius: 4px;
   font-size: 12px;
