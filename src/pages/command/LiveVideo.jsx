@@ -67,7 +67,7 @@ export default function LiveVideo() {
   // --- UPDATED RENDER LOGIC ---
   const renderStream = (device) => {
     const url = device.streamUrl;
-    const serverType = device.videoServer; // Use the new dropdown value
+    const serverType = device.videoServer;
 
     if (!url) return <div className="no-stream">No Stream URL</div>;
 
@@ -86,8 +86,8 @@ export default function LiveVideo() {
           frameBorder="0"
           allow="autoplay; encrypted-media; picture-in-picture"
           allowFullScreen
-          // CRITICAL: This helps authorize the stream on Vercel
           referrerPolicy="no-referrer-when-downgrade"
+          title={device.deviceName}
         />
       );
     }
@@ -100,8 +100,17 @@ export default function LiveVideo() {
           src={url}
           className="live-video-player"
           alt="Live Stream"
-          style={{ objectFit: 'contain', backgroundColor: '#000' }}
+          // This allows the browser to request the image from a different origin (your phone IP)
+          crossOrigin="anonymous" 
+          style={{ 
+            objectFit: 'cover', 
+            backgroundColor: '#000', 
+            width: '100%', 
+            height: '100%',
+            display: 'block' 
+          }}
           onError={(e) => { 
+            console.error("Stream Error for:", device.deviceName);
             e.target.src = "https://via.placeholder.com/400x300?text=Camera+Offline"; 
           }}
         />
@@ -140,7 +149,9 @@ export default function LiveVideo() {
                     </div>
                     <FaTrash className="delete-icon" onClick={() => handleDetachCamera(device)} />
                   </div>
-                  <div className="video-content">{renderStream(device)}</div>
+                  <div className="video-content">
+                    {renderStream(device)}
+                  </div>
                   <div className="video-footer">
                     {device.deviceState} • {device.videoServer}
                   </div>
