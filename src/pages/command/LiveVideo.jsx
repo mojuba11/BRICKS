@@ -71,11 +71,12 @@ export default function LiveVideo() {
 
     if (!url) return <div className="no-stream">No Stream URL</div>;
 
-    // 1. Handle Cloud/Embed Servers (RTSP.me, YouTube, Wowza)
+    // 1. Handle Cloud/Embed/Direct Servers (RTSP.me, YouTube, Wowza, H264+AAC)
     if (
       serverType === "RTSP.me" || 
       serverType === "YouTube" || 
       serverType === "Wowza" ||
+      serverType === "Video Server H264+AAC" || // Added support for new server type
       url.includes("embed")
     ) {
       return (
@@ -100,7 +101,6 @@ export default function LiveVideo() {
           src={url}
           className="live-video-player"
           alt="Live Stream"
-          // This allows the browser to request the image from a different origin (your phone IP)
           crossOrigin="anonymous" 
           style={{ 
             objectFit: 'cover', 

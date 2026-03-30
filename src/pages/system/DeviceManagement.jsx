@@ -16,7 +16,7 @@ const DeviceManagement = () => {
   const initialFormState = {
     deviceId: "", deviceName: "", capacity: "", firm: "", dept: "",
     deviceState: "Normal", 
-    videoServer: "RTSP.me", // Updated default
+    videoServer: "Video Server H264+AAC", // Set as the new default
     recordVideo: "No", gpsType: "WGS84", gpsInterval: "1000",
     enableFence: "No", fenceName: "", fenceAlarm: "No",
     hardwareSerial: "", deviceSerial: "", hardwareVersion: "",
@@ -100,7 +100,7 @@ const DeviceManagement = () => {
             <tr>
               <th>ID</th>
               <th>Name</th>
-              <th>Server Type</th> {/* Added Column */}
+              <th>Server Type</th>
               <th>Status</th>
               <th>Stream</th>
               <th>Operate</th>
@@ -113,7 +113,7 @@ const DeviceManagement = () => {
               <tr key={dev._id}>
                 <td>{dev.deviceId}</td>
                 <td>{dev.deviceName}</td>
-                <td><small>{dev.videoServer}</small></td> {/* Show Server Type */}
+                <td><small>{dev.videoServer}</small></td>
                 <td>
                   <span className={`state-pill ${dev.deviceState.toLowerCase()}`}>
                     {dev.deviceState}
@@ -152,10 +152,10 @@ const DeviceManagement = () => {
                   <input value={form.deviceName} onChange={(e) => setForm({...form, deviceName: e.target.value})} required />
                 </div>
 
-                {/* --- NEW VIDEO SERVER DROPDOWN --- */}
                 <div className="input-group">
                   <label>Video Server Type</label>
                   <select value={form.videoServer} onChange={(e) => setForm({...form, videoServer: e.target.value})}>
+                    <option value="Video Server H264+AAC">Video Server H264+AAC</option>
                     <option value="RTSP.me">RTSP.me (Cloud Embed)</option>
                     <option value="DroidCam">DroidCam (Local IP)</option>
                     <option value="YouTube">YouTube Live</option>
@@ -182,9 +182,6 @@ const DeviceManagement = () => {
                     value={form.streamUrl} 
                     onChange={(e) => setForm({...form, streamUrl: e.target.value})} 
                   />
-                  <small style={{color: '#888', marginTop: '4px', display: 'block'}}>
-                    Paste your Embed Link (RTSP.me) or Local IP (DroidCam) here.
-                  </small>
                 </div>
 
                 <div className="input-group">
