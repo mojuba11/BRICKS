@@ -1,6 +1,7 @@
+/* Layout Wrapper */
 .vms-main-wrapper {
   display: flex;
-  height: calc(100vh - 70px);
+  height: calc(100vh - 80px);
   background-color: #111;
   padding: 10px;
   gap: 15px;
@@ -34,13 +35,13 @@
   border-color: #d4b895;
 }
 
-/* --- THE GRID ENGINE --- */
+/* --- GRID SYSTEM --- */
 .vms-grid-container {
   flex: 1;
   display: grid !important;
-  gap: 5px;
+  gap: 4px;
   background-color: #000;
-  border: 2px solid #222;
+  border: 1px solid #333;
   height: 100%;
 }
 
@@ -56,6 +57,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-height: 0; /* Important for grid items */
 }
 
 .vms-video-container {
@@ -66,19 +68,21 @@
 }
 
 .video-header {
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.8);
   padding: 5px 10px;
   font-size: 11px;
   display: flex;
   justify-content: space-between;
   color: white;
-  z-index: 2;
+  z-index: 10;
 }
 
 .video-content {
   flex: 1;
   position: relative;
   background: #000;
+  width: 100%;
+  height: 100%;
 }
 
 .live-video-player {
@@ -88,13 +92,15 @@
   width: 100% !important;
   height: 100% !important;
   border: none;
+  display: block;
 }
 
 .video-footer {
   background: rgba(0,0,0,0.8);
   color: #c2a078;
-  font-size: 10px;
+  font-size: 9px;
   padding: 3px 10px;
+  z-index: 10;
 }
 
 .add-slot-placeholder {
@@ -102,7 +108,7 @@
   height: 100%;
   background: transparent;
   border: none;
-  color: #555;
+  color: #444;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -116,11 +122,11 @@
   color: #c2a078;
 }
 
-/* POPUP STYLES */
+/* Modal UI */
 .vms-popup-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0,0,0,0.85);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -129,26 +135,27 @@
 
 .vms-popup-box {
   background: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 350px;
-  color: black;
+  padding: 25px;
+  border-radius: 10px;
+  width: 400px;
+  color: #333;
 }
 
 .camera-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px;
+  gap: 12px;
+  padding: 12px;
   border: 1px solid #eee;
-  margin-top: 5px;
+  margin-top: 8px;
   cursor: pointer;
+  border-radius: 6px;
 }
 
-.camera-item:hover { background: #f9f9f9; }
+.camera-item:hover { background: #fcf9f5; border-color: #c2a078; }
 
 .spinning { animation: spin 2s linear infinite; }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-.rec-dot { color: red; animation: blink 1s infinite; }
+.rec-dot { color: #ff4444; animation: blink 1s infinite; }
 @keyframes blink { 50% { opacity: 0; } }

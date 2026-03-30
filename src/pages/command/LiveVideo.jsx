@@ -36,11 +36,11 @@ export default function LiveVideo() {
       const res = await fetch(`${API_URL}/${device._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slot: selectedSlot }), 
+        body: JSON.stringify({ slot: String(selectedSlot) }), // Send as string for consistency
       });
 
       if (res.ok) {
-        fetchDevices();
+        await fetchDevices();
         setIsModalOpen(false);
       }
     } catch (err) {
@@ -62,29 +62,33 @@ export default function LiveVideo() {
   };
 
   const getDeviceInSlot = (slotId) =>
-    allDevices.find((d) => d.slot !== null && Number(d.slot) === Number(slotId));
+    allDevices.find((d) => d.slot !== null && d.slot !== undefined && Number(d.slot) === Number(slotId));
 
   const renderStream = (device) => {
     const url = device.streamUrl;
-    if (!url) return <div className="no-stream">No Stream</div>;
+    if (!url) return <div className="no-stream">No Stream URL</div>;
 
-    if (url.includes("rtsp.me") || url.includes("embed")) {
+    // Handle RTSP.me, YouTube, or generic embeds
+    if (url.includes("rtsp.me") || url.includes("youtube.com") || url.includes("embed")) {
       return (
         <iframe
+          key={device._id}
           src={url}
           className="live-video-player"
           frameBorder="0"
-          allow="autoplay; encrypted-media"
+          allow="autoplay; encrypted-media; picture-in-picture"
           allowFullScreen
         />
       );
     }
 
+    // Default to Image/MJPEG
     return (
       <img
+        key={device._id}
         src={url}
         className="live-video-player"
-        alt="Live"
+        alt="Live Stream"
         onError={(e) => { e.target.src = "https://via.placeholder.com/400x300?text=Camera+Offline"; }}
       />
     );
@@ -92,7 +96,6 @@ export default function LiveVideo() {
 
   return (
     <div className="vms-main-wrapper">
-      {/* SIDEBAR CONTROLS */}
       <div className="vms-sidebar">
         <div className="vms-controls">
           {[1, 4, 9, 16].map((num) => (
@@ -106,7 +109,6 @@ export default function LiveVideo() {
         </div>
       </div>
 
-      {/* THE GRID */}
       <div className={`vms-grid-container grid-size-${gridSize}`}>
         {Array.from({ length: gridSize }, (_, i) => i + 1).map((slotId) => {
           const device = getDeviceInSlot(slotId);
@@ -136,7 +138,6 @@ export default function LiveVideo() {
         })}
       </div>
 
-      {/* POPUP */}
       {isModalOpen && (
         <div className="vms-popup-overlay">
           <div className="vms-popup-box">
@@ -154,6 +155,7 @@ export default function LiveVideo() {
                   </div>
                 </div>
               ))}
+              {allDevices.filter(d => !d.slot).length === 0 && <p style={{color:'#666', textAlign:'center', padding:'20px'}}>All cameras are already linked.</p>}
             </div>
           </div>
         </div>
