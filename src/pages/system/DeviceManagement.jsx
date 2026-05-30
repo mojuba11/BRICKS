@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./DeviceManagement.css";
 
+// Environment-aware fallback base selection
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://bricks-backend-7wnv.onrender.com";
 const API_URL = `${API_BASE}/api/device`;
 const DEPT_URL = `${API_BASE}/api/departments`;
@@ -13,15 +14,17 @@ const DeviceManagement = () => {
   const [editingDevice, setEditingDevice] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Updated state metrics to conform with hardware device attributes
   const initialFormState = {
     deviceId: "", deviceName: "", capacity: "", firm: "", dept: "",
     deviceState: "Normal", 
-    videoServer: "Video Server H264+AAC", // Set as the new default
+    videoServer: "GB/T 28181 Standard", // Optimized modern infrastructure default
     recordVideo: "No", gpsType: "WGS84", gpsInterval: "1000",
     enableFence: "No", fenceName: "", fenceAlarm: "No",
     hardwareSerial: "", deviceSerial: "", hardwareVersion: "",
     softwareVersion: "", intelligentAnalysis: "",
-    streamUrl: "" 
+    streamUrl: "", // Now populated automatically by your media gateway webhooks
+    status: "Offline" // State tracking variable linked to database
   };
 
   const [form, setForm] = useState(initialFormState);
@@ -40,7 +43,7 @@ const DeviceManagement = () => {
       setDevices(devRes.data);
       setDepartments(deptRes.data);
     } catch (err) {
-      console.error("Fetch error", err);
+      console.error("Fetch operations mismatch exception:", err);
     } finally {
       setLoading(false);
     }
@@ -69,17 +72,17 @@ const DeviceManagement = () => {
       }
       setShowModal(false);
     } catch (err) {
-      alert(err.response?.data?.message || "Operation failed.");
+      alert(err.response?.data?.message || "Infrastructure API connection timeout.");
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Delete this device?")) {
+    if (window.confirm("Are you sure you want to completely de-register this bodycam?")) {
       try {
         await axios.delete(`${API_URL}/${id}`);
         setDevices(devices.filter(d => d._id !== id));
       } catch (err) {
-        alert("Delete failed");
+        alert("Deletion sequence failed.");
       }
     }
   };
@@ -88,45 +91,46 @@ const DeviceManagement = () => {
     <div className="device-mgmt-container">
       <div className="device-mgmt-header">
         <div className="title-section">
-          <h2>Device Management</h2>
-          <p>Total Registered: <strong>{devices.length}</strong></p>
+          <h2>Device Management Panel</h2>
+          <p>Total Registered Assets: <strong>{devices.length}</strong></p>
         </div>
-        <button className="add-btn" onClick={() => handleOpenModal()}>+ Register Device</button>
+        <button className="add-btn" onClick={() => handleOpenModal()}>+ Register Bodycam</button>
       </div>
 
       <div className="table-wrapper">
         <table>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Server Type</th>
-              <th>Status</th>
-              <th>Stream</th>
-              <th>Operate</th>
+              <th>Device Hardware ID</th>
+              <th>Unit Name</th>
+              <th>Protocol Standard</th>
+              <th>Operating Status</th>
+              <th>Live Feed Link</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan="6" className="loading-cell">Loading...</td></tr>
+              <tr><td colSpan="6" className="loading-cell">Syncing database matrix channels...</td></tr>
             ) : devices.map((dev) => (
               <tr key={dev._id}>
-                <td>{dev.deviceId}</td>
-                <td>{dev.deviceName}</td>
-                <td><small>{dev.videoServer}</small></td>
+                <td><code>{dev.deviceId}</code></td>
+                <td><strong>{dev.deviceName}</strong></td>
+                <td><small className="server-tag">{dev.videoServer}</small></td>
                 <td>
-                  <span className={`state-pill ${dev.deviceState.toLowerCase()}`}>
-                    {dev.deviceState}
+                  {/* Dynamic Status Badging mirroring our backend hooks updates */}
+                  <span className={`status-badge ${dev.status?.toLowerCase() || 'offline'}`}>
+                    {dev.status || "Offline"}
                   </span>
                 </td>
                 <td>
                   <span className={dev.streamUrl ? "stream-ok" : "stream-none"}>
-                    {dev.streamUrl ? "🔗 Active" : "No Link"}
+                    {dev.streamUrl ? "📡 Active Broadcast" : "Idle"}
                   </span>
                 </td>
                 <td>
-                  <button className="edit-link" onClick={() => handleOpenModal(dev)}>Modify</button>
-                  <button className="delete-link" onClick={() => handleDelete(dev._id)}>Delete</button>
+                  <button className="edit-link" onClick={() => handleOpenModal(dev)}>Configure</button>
+                  <button className="delete-link" onClick={() => handleDelete(dev._id)}>Wipe</button>
                 </td>
               </tr>
             ))}
@@ -138,37 +142,39 @@ const DeviceManagement = () => {
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
-               <h3>{editingDevice ? "Modify Device Settings" : "Register New Device"}</h3>
+               <h3>{editingDevice ? "Modify Asset Configurations" : "Provision New Hardware Unit"}</h3>
                <button className="close-btn" onClick={() => setShowModal(false)}>&times;</button>
             </div>
             <form onSubmit={handleSubmit}>
               <div className="form-grid">
                 <div className="input-group">
-                  <label>Device ID</label>
-                  <input value={form.deviceId} onChange={(e) => setForm({...form, deviceId: e.target.value})} required />
+                  <label>Hardware Device ID (SIP ID)</label>
+                  <input 
+                    placeholder="e.g., 34020000001320000001"
+                    value={form.deviceId} 
+                    onChange={(e) => setForm({...form, deviceId: e.target.value})} 
+                    disabled={editingDevice ? true : false} // Lock Device ID once registered to ensure hardware tracking stability
+                    required 
+                  />
                 </div>
                 <div className="input-group">
-                  <label>Device Name</label>
+                  <label>Assigned Unit/Officer Name</label>
                   <input value={form.deviceName} onChange={(e) => setForm({...form, deviceName: e.target.value})} required />
                 </div>
 
                 <div className="input-group">
-                  <label>Video Server Type</label>
+                  <label>Ingestion Inbound Protocol</label>
                   <select value={form.videoServer} onChange={(e) => setForm({...form, videoServer: e.target.value})}>
-                    <option value="Video Server H264+AAC">Video Server H264+AAC</option>
-                    <option value="RTSP.me">RTSP.me (Cloud Embed)</option>
-                    <option value="DroidCam">DroidCam (Local IP)</option>
-                    <option value="YouTube">YouTube Live</option>
-                    <option value="Wowza">Wowza Cloud</option>
-                    <option value="AntMedia">Ant Media Server</option>
-                    <option value="Generic">Generic / Other</option>
+                    <option value="GB/T 28181 Police Standard">GB/T 28181 Law Enforcement Engine</option>
+                    <option value="Direct RTSP/RTMP Stream">Direct RTSP / RTMP Network Feed</option>
+                    <option value="Custom Stream Relay Gateway">Custom Stream Relay Gateway</option>
                   </select>
                 </div>
 
                 <div className="input-group">
-                  <label>Department</label>
+                  <label>Department Routing</label>
                   <select value={form.dept} onChange={(e) => setForm({...form, dept: e.target.value})}>
-                    <option value="">Select Department</option>
+                    <option value="">Select Station Department</option>
                     {departments.map(d => (
                       <option key={d._id} value={d.name}>{d.name}</option>
                     ))}
@@ -176,33 +182,34 @@ const DeviceManagement = () => {
                 </div>
 
                 <div className="input-group full-width">
-                  <label>Live Stream URL</label>
+                  <label>Live Stream Watch URL (Automated Feed Field)</label>
                   <input 
-                    placeholder="https://rtsp.me/embed/..." 
+                    className="read-only-input"
+                    readOnly
+                    placeholder={form.streamUrl ? form.streamUrl : "No active pipeline—waiting for hardware unit broadcast signal..."}
                     value={form.streamUrl} 
-                    onChange={(e) => setForm({...form, streamUrl: e.target.value})} 
                   />
                 </div>
 
                 <div className="input-group">
-                  <label>GPS Standard</label>
+                  <label>GPS Mapping System</label>
                   <select value={form.gpsType} onChange={(e) => setForm({...form, gpsType: e.target.value})}>
-                    <option value="WGS84">WGS84 (Global)</option>
-                    <option value="GCJ02">GCJ02 (China)</option>
+                    <option value="WGS84">WGS84 (Global Standard GPS)</option>
+                    <option value="GCJ02">GCJ02 (Encrypted Topology Standard)</option>
                   </select>
                 </div>
                 <div className="input-group">
-                  <label>Operating State</label>
+                  <label>System Diagnostics State</label>
                   <select value={form.deviceState} onChange={(e) => setForm({...form, deviceState: e.target.value})}>
-                    <option value="Normal">Normal</option>
-                    <option value="Alarm">Alarm</option>
-                    <option value="Offline">Offline</option>
+                    <option value="Normal">Operational / Normal</option>
+                    <option value="Alarm">SOS Alarm Event Active</option>
+                    <option value="Maintenance">Maintenance Lockdown</option>
                   </select>
                 </div>
               </div>
               <div className="modal-footer">
-                <button type="button" className="cancel-btn" onClick={() => setShowModal(false)}>Cancel</button>
-                <button type="submit" className="submit-btn">{editingDevice ? "Save Changes" : "Register Device"}</button>
+                <button type="button" className="cancel-btn" onClick={() => setShowModal(false)}>Close</button>
+                <button type="submit" className="submit-btn">{editingDevice ? "Apply Overrides" : "Initialize Unit"}</button>
               </div>
             </form>
           </div>
