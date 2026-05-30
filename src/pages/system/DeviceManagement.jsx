@@ -165,7 +165,7 @@ const DeviceManagement = () => {
                 <div className="input-group">
                   <label>Ingestion Inbound Protocol</label>
                   <select value={form.videoServer} onChange={(e) => setForm({...form, videoServer: e.target.value})}>
-                    <option value="GB/T 28181 Police Standard">GB/T 28181 Law Enforcement Engine</option>
+                    <option value="GB/T 28181 Police Standard">GB/T 28181 </option>
                     <option value="Direct RTSP/RTMP Stream">Direct RTSP / RTMP Network Feed</option>
                     <option value="Custom Stream Relay Gateway">Custom Stream Relay Gateway</option>
                   </select>
