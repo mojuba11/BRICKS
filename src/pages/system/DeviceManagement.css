@@ -11,7 +11,7 @@
 }
 
 .add-btn {
-  background: #8b5e3c;
+  background: #8b5e3c !important;
   color: white;
   border: none;
   padding: 10px 20px;
