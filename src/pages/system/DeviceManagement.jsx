@@ -150,9 +150,9 @@ const DeviceManagement = () => {
             <form onSubmit={handleSubmit}>
               <div className="form-grid">
                 <div className="input-group">
-                  <label>Hardware Device ID (SIP ID)</label>
+                  <label>Device</label>
                   <input 
-                    placeholder="e.g., 34020000001320000001"
+                    placeholder="e.g., 783624"
                     value={form.deviceId} 
                     onChange={(e) => setForm({...form, deviceId: e.target.value})} 
                     disabled={editingDevice ? true : false} // Lock Device ID once registered to ensure hardware tracking stability
@@ -165,7 +165,7 @@ const DeviceManagement = () => {
                 </div>
 
                 <div className="input-group">
-                  <label>Ingestion Inbound Protocol</label>
+                  <label>Inbound Protocol</label>
                   {/* Fixed value tags here to preserve matching alignment criteria during configuration changes */}
                   <select value={form.videoServer} onChange={(e) => setForm({...form, videoServer: e.target.value})}>
                     <option value="GB/T 28181 Standard">GB/T 28181 Standard</option>
