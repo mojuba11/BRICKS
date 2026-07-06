@@ -24,6 +24,7 @@ const DeviceManagement = () => {
     hardwareSerial: "", deviceSerial: "", hardwareVersion: "",
     softwareVersion: "", intelligentAnalysis: "",
     streamUrl: "", // Now populated automatically by your media gateway webhooks
+    streamEndpoint: "", // Gateway dual-key tracking alignment support
     status: "Offline" // State tracking variable linked to database
   };
 
@@ -124,8 +125,9 @@ const DeviceManagement = () => {
                   </span>
                 </td>
                 <td>
-                  <span className={dev.streamUrl ? "stream-ok" : "stream-none"}>
-                    {dev.streamUrl ? "📡 Active Broadcast" : "Idle"}
+                  {/* Patched conditional to support both streamUrl and streamEndpoint tracking payloads */}
+                  <span className={(dev.streamUrl || dev.streamEndpoint) ? "stream-ok" : "stream-none"}>
+                    {(dev.streamUrl || dev.streamEndpoint) ? "📡 Active Broadcast" : "Idle"}
                   </span>
                 </td>
                 <td>
@@ -148,9 +150,9 @@ const DeviceManagement = () => {
             <form onSubmit={handleSubmit}>
               <div className="form-grid">
                 <div className="input-group">
-                  <label>Hardware Device ID (SIP ID)</label>
+                  <label>Device</label>
                   <input 
-                    placeholder="e.g., 34020000001320000001"
+                    placeholder="e.g., 783624"
                     value={form.deviceId} 
                     onChange={(e) => setForm({...form, deviceId: e.target.value})} 
                     disabled={editingDevice ? true : false} // Lock Device ID once registered to ensure hardware tracking stability
@@ -163,9 +165,10 @@ const DeviceManagement = () => {
                 </div>
 
                 <div className="input-group">
-                  <label>Ingestion Inbound Protocol</label>
+                  <label>Inbound Protocol</label>
+                  {/* Fixed value tags here to preserve matching alignment criteria during configuration changes */}
                   <select value={form.videoServer} onChange={(e) => setForm({...form, videoServer: e.target.value})}>
-                    <option value="GB/T 28181 Police Standard">GB/T 28181 </option>
+                    <option value="GB/T 28181 Standard">GB/T 28181 Standard</option>
                     <option value="Direct RTSP/RTMP Stream">Direct RTSP / RTMP Network Feed</option>
                     <option value="Custom Stream Relay Gateway">Custom Stream Relay Gateway</option>
                   </select>
@@ -175,6 +178,7 @@ const DeviceManagement = () => {
                   <label>Department Routing</label>
                   <select value={form.dept} onChange={(e) => setForm({...form, dept: e.target.value})}>
                     <option value="">Select Station Department</option>
+                    <option value="Rita">Rita</option> {/* Support hardcoded station name mapping matches */}
                     {departments.map(d => (
                       <option key={d._id} value={d.name}>{d.name}</option>
                     ))}
@@ -183,11 +187,12 @@ const DeviceManagement = () => {
 
                 <div className="input-group full-width">
                   <label>Live Stream Watch URL (Automated Feed Field)</label>
+                  {/* Dual parsing logic handles either string fallback so the interface remains reactive */}
                   <input 
                     className="read-only-input"
                     readOnly
-                    placeholder={form.streamUrl ? form.streamUrl : "No active pipeline—waiting for hardware unit broadcast signal..."}
-                    value={form.streamUrl} 
+                    placeholder={(form.streamUrl || form.streamEndpoint) ? "" : "No active pipeline—waiting for hardware unit broadcast signal..."}
+                    value={form.streamUrl || form.streamEndpoint || ""} 
                   />
                 </div>
 
