@@ -88,13 +88,6 @@ const DeviceManagement = () => {
     }
   };
 
-  // Click handler to open the streaming link safely in a new window
-  const handleWatchStream = (url) => {
-    if (url) {
-      window.open(url, "_blank", "noopener,noreferrer");
-    }
-  };
-
   return (
     <div className="device-mgmt-container">
       <div className="device-mgmt-header">
@@ -120,44 +113,29 @@ const DeviceManagement = () => {
           <tbody>
             {loading ? (
               <tr><td colSpan="6" className="loading-cell">Syncing database matrix channels...</td></tr>
-            ) : devices.map((dev) => {
-              const activeStream = dev.streamUrl || dev.streamEndpoint;
-              return (
-                <tr key={dev._id}>
-                  <td><code>{dev.deviceId}</code></td>
-                  <td><strong>{dev.deviceName}</strong></td>
-                  <td><small className="server-tag">{dev.videoServer}</small></td>
-                  <td>
-                    {/* Dynamic Status Badging mirroring our backend hooks updates */}
-                    <span className={`status-badge ${dev.status?.toLowerCase() || 'offline'}`}>
-                      {dev.status || "Offline"}
-                    </span>
-                  </td>
-                  <td>
-                    {/* Patched conditional to support both streamUrl and streamEndpoint tracking payloads */}
-                    <span className={activeStream ? "stream-ok" : "stream-none"}>
-                      {activeStream ? (
-                        <a 
-                          href={activeStream} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="active-stream-link"
-                          style={{ fontWeight: "bold", textDecoration: "underline", color: "#00ff66" }}
-                        >
-                          {activeStream}
-                        </a>
-                      ) : (
-                        "Idle"
-                      )}
-                    </span>
-                  </td>
-                  <td>
-                    <button className="edit-link" onClick={() => handleOpenModal(dev)}>Configure</button>
-                    <button className="delete-link" onClick={() => handleDelete(dev._id)}>Wipe</button>
-                  </td>
-                </tr>
-              );
-            })}
+            ) : devices.map((dev) => (
+              <tr key={dev._id}>
+                <td><code>{dev.deviceId}</code></td>
+                <td><strong>{dev.deviceName}</strong></td>
+                <td><small className="server-tag">{dev.videoServer}</small></td>
+                <td>
+                  {/* Dynamic Status Badging mirroring our backend hooks updates */}
+                  <span className={`status-badge ${dev.status?.toLowerCase() || 'offline'}`}>
+                    {dev.status || "Offline"}
+                  </span>
+                </td>
+                <td>
+                  {/* Patched conditional to support both streamUrl and streamEndpoint tracking payloads */}
+                  <span className={(dev.streamUrl || dev.streamEndpoint) ? "stream-ok" : "stream-none"}>
+                    {(dev.streamUrl || dev.streamEndpoint) ? "📡 Active Broadcast" : "Idle"}
+                  </span>
+                </td>
+                <td>
+                  <button className="edit-link" onClick={() => handleOpenModal(dev)}>Configure</button>
+                  <button className="delete-link" onClick={() => handleDelete(dev._id)}>Wipe</button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -209,30 +187,13 @@ const DeviceManagement = () => {
 
                 <div className="input-group full-width">
                   <label>Live Stream Watch URL (Automated Feed Field)</label>
-                  {/* Container wrapping input input field and open action button side by side */}
-                  <div style={{ display: "flex", gap: "8px" }}>
-                    <input 
-                      className="editable-stream-input"
-                      style={{ flex: 1 }}
-                      placeholder="Input streaming endpoint link directly (e.g., rtsp://... or https://...)"
-                      value={form.streamUrl || ""} 
-                      onChange={(e) => setForm({
-                        ...form, 
-                        streamUrl: e.target.value, 
-                        streamEndpoint: e.target.value // Dual-key structure fallback updates concurrently 
-                      })} 
-                    />
-                    {(form.streamUrl || form.streamEndpoint) && (
-                      <button 
-                        type="button" 
-                        className="modal-pop-link-btn"
-                        style={{ padding: "0 12px", background: "#28a745", color: "white", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "bold" }}
-                        onClick={() => handleWatchStream(form.streamUrl || form.streamEndpoint)}
-                      >
-                        🔗 Open Link
-                      </button>
-                    )}
-                  </div>
+                  {/* Dual parsing logic handles either string fallback so the interface remains reactive */}
+                  <input 
+                    className="read-only-input"
+                    readOnly
+                    placeholder={(form.streamUrl || form.streamEndpoint) ? "" : "No active pipeline—waiting for hardware unit broadcast signal..."}
+                    value={form.streamUrl || form.streamEndpoint || ""} 
+                  />
                 </div>
 
                 <div className="input-group">
