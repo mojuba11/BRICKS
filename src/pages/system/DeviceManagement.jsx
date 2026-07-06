@@ -1,54 +1,32 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import "./DeviceManagement.css";
-
-// Environment-aware fallback base selection
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "https://bricks-backend-7wnv.onrender.com";
-const API_URL = `${API_BASE}/api/device`;
-const DEPT_URL = `${API_BASE}/api/departments`;
 
 const DeviceManagement = () => {
   const [devices, setDevices] = useState([]);
-  const [departments, setDepartments] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingDevice, setEditingDevice] = useState(null);
-  const [loading, setLoading] = useState(false);
 
-  // Updated state metrics to conform with hardware device attributes
-  const initialFormState = {
-    deviceId: "", deviceName: "", capacity: "", firm: "", dept: "",
-    deviceState: "Normal", 
-    videoServer: "GB/T 28181 Standard", // Optimized modern infrastructure default
-    recordVideo: "No", gpsType: "WGS84", gpsInterval: "1000",
-    enableFence: "No", fenceName: "", fenceAlarm: "No",
-    hardwareSerial: "", deviceSerial: "", hardwareVersion: "",
-    softwareVersion: "", intelligentAnalysis: "",
-    streamUrl: "", // Now populated automatically by your media gateway webhooks
-    streamEndpoint: "", // Gateway dual-key tracking alignment support
-    status: "Offline" // State tracking variable linked to database
-  };
-
-  const [form, setForm] = useState(initialFormState);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const [devRes, deptRes] = await Promise.all([
-        axios.get(API_URL),
-        axios.get(DEPT_URL).catch(() => ({ data: [] }))
-      ]);
-      setDevices(devRes.data);
-      setDepartments(deptRes.data);
-    } catch (err) {
-      console.error("Fetch operations mismatch exception:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Form state based on image_bd9a7c.png
+  const [form, setForm] = useState({
+    deviceId: "",
+    deviceName: "",
+    capacity: "",
+    firm: "",
+    dept: "",
+    deviceState: "Normal",
+    videoServer: "Video Server H264+AAC",
+    recordVideo: "No",
+    gpsType: "WGS84",
+    gpsInterval: "1000",
+    enableFence: "No",
+    fenceName: "",
+    fenceAlarm: "No",
+    hardwareSerial: "",
+    deviceSerial: "",
+    hardwareVersion: "",
+    softwareVersion: "",
+    intelligentAnalysis: ""
+  });
 
   const handleOpenModal = (device = null) => {
     if (device) {
@@ -56,165 +34,195 @@ const DeviceManagement = () => {
       setForm({ ...device });
     } else {
       setEditingDevice(null);
-      setForm(initialFormState);
+      setForm({
+        deviceId: "", deviceName: "", capacity: "", firm: "", dept: "",
+        deviceState: "Normal", videoServer: "Video Server H264+AAC",
+        recordVideo: "No", gpsType: "WGS84", gpsInterval: "1000",
+        enableFence: "No", fenceName: "", fenceAlarm: "No",
+        hardwareSerial: "", deviceSerial: "", hardwareVersion: "",
+        softwareVersion: "", intelligentAnalysis: ""
+      });
     }
     setShowModal(true);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      if (editingDevice) {
-        const res = await axios.put(`${API_URL}/${editingDevice._id}`, form);
-        setDevices(devices.map(d => d._id === editingDevice._id ? res.data : d));
-      } else {
-        const res = await axios.post(API_URL, form);
-        setDevices([...devices, res.data]);
-      }
-      setShowModal(false);
-    } catch (err) {
-      alert(err.response?.data?.message || "Infrastructure API connection timeout.");
+    if (editingDevice) {
+      setDevices(devices.map(d => d.id === editingDevice.id ? { ...form, id: d.id } : d));
+    } else {
+      setDevices([...devices, { ...form, id: Date.now() }]);
     }
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to completely de-register this bodycam?")) {
-      try {
-        await axios.delete(`${API_URL}/${id}`);
-        setDevices(devices.filter(d => d._id !== id));
-      } catch (err) {
-        alert("Deletion sequence failed.");
-      }
-    }
+    setShowModal(false);
   };
 
   return (
     <div className="device-mgmt-container">
-      <div className="device-mgmt-header">
-        <div className="title-section">
-          <h2>Device Management Panel</h2>
-          <p>Total Registered Assets: <strong>{devices.length}</strong></p>
+      <div className="header-actions">
+        <div className="search-bar">
+          <input type="text" placeholder="Device ID" />
+          <input type="text" placeholder="Device Name" />
+          <select><option>Select departments</option></select>
+          <select><option>Device State</option></select>
+          <button className="query-btn">🔍 Query</button>
         </div>
-        <button className="add-btn" onClick={() => handleOpenModal()}>+ Register Bodycam</button>
+        <div className="batch-actions">
+          <button className="add-device-btn" onClick={() => handleOpenModal()}>+ Add device</button>
+          <button className="batch-btn orange">🗑️ Delete in batches</button>
+          <button className="batch-btn blue">📥 Import</button>
+        </div>
       </div>
 
       <div className="table-wrapper">
         <table>
           <thead>
             <tr>
-              <th>Device Hardware ID</th>
-              <th>Unit Name</th>
-              <th>Protocol Standard</th>
-              <th>Operating Status</th>
-              <th>Live Feed Link</th>
-              <th>Actions</th>
+              <th><input type="checkbox" /></th>
+              <th>Device ID</th>
+              <th>Device Name</th>
+              <th>Dept</th>
+              <th>State</th>
+              <th>Capacity (GB)</th>
+              <th>GPS Type</th>
+              <th>Operate</th>
             </tr>
           </thead>
           <tbody>
-            {loading ? (
-              <tr><td colSpan="6" className="loading-cell">Syncing database matrix channels...</td></tr>
-            ) : devices.map((dev) => (
-              <tr key={dev._id}>
-                <td><code>{dev.deviceId}</code></td>
-                <td><strong>{dev.deviceName}</strong></td>
-                <td><small className="server-tag">{dev.videoServer}</small></td>
+            {devices.length > 0 ? devices.map((dev) => (
+              <tr key={dev.id}>
+                <td><input type="checkbox" /></td>
+                <td>{dev.deviceId}</td>
+                <td>{dev.deviceName}</td>
+                <td>{dev.dept}</td>
+                <td><span className={`state-pill ${dev.deviceState.toLowerCase()}`}>{dev.deviceState}</span></td>
+                <td>{dev.capacity}</td>
+                <td>{dev.gpsType}</td>
                 <td>
-                  {/* Dynamic Status Badging mirroring our backend hooks updates */}
-                  <span className={`status-badge ${dev.status?.toLowerCase() || 'offline'}`}>
-                    {dev.status || "Offline"}
-                  </span>
-                </td>
-                <td>
-                  {/* Patched conditional to support both streamUrl and streamEndpoint tracking payloads */}
-                  <span className={(dev.streamUrl || dev.streamEndpoint) ? "stream-ok" : "stream-none"}>
-                    {(dev.streamUrl || dev.streamEndpoint) ? "📡 Active Broadcast" : "Idle"}
-                  </span>
-                </td>
-                <td>
-                  <button className="edit-link" onClick={() => handleOpenModal(dev)}>Configure</button>
-                  <button className="delete-link" onClick={() => handleDelete(dev._id)}>Wipe</button>
+                  <button className="edit-link" onClick={() => handleOpenModal(dev)}>Modify</button>
+                  <button className="delete-link" onClick={() => setDevices(devices.filter(d => d.id !== dev.id))}>Delete</button>
                 </td>
               </tr>
-            ))}
+            )) : (
+              <tr><td colSpan="8" className="empty-row">No devices registered.</td></tr>
+            )}
           </tbody>
         </table>
       </div>
 
       {showModal && (
         <div className="modal-overlay">
-          <div className="modal-content">
+          <div className="modal-card large">
             <div className="modal-header">
-               <h3>{editingDevice ? "Modify Asset Configurations" : "Provision New Hardware Unit"}</h3>
-               <button className="close-btn" onClick={() => setShowModal(false)}>&times;</button>
+              <h3>{editingDevice ? "Modify Device" : "Add Device"}</h3>
+              <button className="close-btn" onClick={() => setShowModal(false)}>&times;</button>
             </div>
-            <form onSubmit={handleSubmit}>
-              <div className="form-grid">
-                <div className="input-group">
-                  <label>Device</label>
-                  <input 
-                    placeholder="e.g., 783624"
-                    value={form.deviceId} 
-                    onChange={(e) => setForm({...form, deviceId: e.target.value})} 
-                    disabled={editingDevice ? true : false} // Lock Device ID once registered to ensure hardware tracking stability
-                    required 
-                  />
-                </div>
-                <div className="input-group">
-                  <label>Assigned Unit/Officer Name</label>
-                  <input value={form.deviceName} onChange={(e) => setForm({...form, deviceName: e.target.value})} required />
+            <form onSubmit={handleSubmit} className="device-form">
+              <div className="form-columns">
+                {/* Left Column */}
+                <div className="column">
+                  <div className="form-item">
+                    <label><span className="required">*</span>Device ID</label>
+                    <input type="text" required value={form.deviceId} onChange={e => setForm({...form, deviceId: e.target.value})} />
+                  </div>
+                  <div className="form-item">
+                    <label>Device name</label>
+                    <input type="text" value={form.deviceName} onChange={e => setForm({...form, deviceName: e.target.value})} />
+                  </div>
+                  <div className="form-item">
+                    <label>Capacity (GB)</label>
+                    <input type="number" value={form.capacity} onChange={e => setForm({...form, capacity: e.target.value})} />
+                  </div>
+                  <div className="form-item">
+                    <label>Firm</label>
+                    <input type="text" value={form.firm} onChange={e => setForm({...form, firm: e.target.value})} />
+                  </div>
+                  <div className="form-item">
+                    <label><span className="required">*</span>Department</label>
+                    <select required value={form.dept} onChange={e => setForm({...form, dept: e.target.value})}>
+                      <option value="">Select departments</option>
+                      <option value="NIGERIA HQ">NIGERIA HQ</option>
+                    </select>
+                  </div>
+                  <div className="form-item">
+                    <label>Device state</label>
+                    <select value={form.deviceState} onChange={e => setForm({...form, deviceState: e.target.value})}>
+                      <option value="Normal">Normal</option>
+                      <option value="Damaged">Damaged</option>
+                    </select>
+                  </div>
+                  <div className="form-item">
+                    <label>Video server</label>
+                    <select value={form.videoServer} onChange={e => setForm({...form, videoServer: e.target.value})}>
+                      <option value="Video Server H264+AAC">Video Server H264+AAC</option>
+                    </select>
+                  </div>
+                  <div className="form-item">
+                    <label>Record video</label>
+                    <select value={form.recordVideo} onChange={e => setForm({...form, recordVideo: e.target.value})}>
+                      <option value="No">No</option>
+                      <option value="Yes">Yes</option>
+                    </select>
+                  </div>
+                  <div className="form-item">
+                    <label>GPS Type</label>
+                    <select value={form.gpsType} onChange={e => setForm({...form, gpsType: e.target.value})}>
+                      <option value="WGS84">WGS84</option>
+                      <option value="Baidu">Baidu</option>
+                    </select>
+                  </div>
+                  <div className="form-item">
+                    <label>GPS sending interval (ms)</label>
+                    <input type="number" value={form.gpsInterval} onChange={e => setForm({...form, gpsInterval: e.target.value})} />
+                  </div>
                 </div>
 
-                <div className="input-group">
-                  <label>Inbound Protocol</label>
-                  {/* Fixed value tags here to preserve matching alignment criteria during configuration changes */}
-                  <select value={form.videoServer} onChange={(e) => setForm({...form, videoServer: e.target.value})}>
-                    <option value="GB/T 28181 Standard">GB/T 28181 Standard</option>
-                    <option value="Direct RTSP/RTMP Stream">Direct RTSP / RTMP Network Feed</option>
-                    <option value="Custom Stream Relay Gateway">Custom Stream Relay Gateway</option>
-                  </select>
-                </div>
-
-                <div className="input-group">
-                  <label>Department Routing</label>
-                  <select value={form.dept} onChange={(e) => setForm({...form, dept: e.target.value})}>
-                    <option value="">Select Station Department</option>
-                    <option value="Rita">Rita</option> {/* Support hardcoded station name mapping matches */}
-                    {departments.map(d => (
-                      <option key={d._id} value={d.name}>{d.name}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="input-group full-width">
-                  <label>Live Stream Watch URL (Automated Feed Field)</label>
-                  {/* Dual parsing logic handles either string fallback so the interface remains reactive */}
-                  <input 
-                    className="read-only-input"
-                    readOnly
-                    placeholder={(form.streamUrl || form.streamEndpoint) ? "" : "No active pipeline—waiting for hardware unit broadcast signal..."}
-                    value={form.streamUrl || form.streamEndpoint || ""} 
-                  />
-                </div>
-
-                <div className="input-group">
-                  <label>GPS Mapping System</label>
-                  <select value={form.gpsType} onChange={(e) => setForm({...form, gpsType: e.target.value})}>
-                    <option value="WGS84">WGS84 (Global Standard GPS)</option>
-                    <option value="GCJ02">GCJ02 (Encrypted Topology Standard)</option>
-                  </select>
-                </div>
-                <div className="input-group">
-                  <label>System Diagnostics State</label>
-                  <select value={form.deviceState} onChange={(e) => setForm({...form, deviceState: e.target.value})}>
-                    <option value="Normal">Operational / Normal</option>
-                    <option value="Alarm">SOS Alarm Event Active</option>
-                    <option value="Maintenance">Maintenance Lockdown</option>
-                  </select>
+                {/* Right Column */}
+                <div className="column">
+                  <div className="form-item">
+                    <label>Enable the fence</label>
+                    <select value={form.enableFence} onChange={e => setForm({...form, enableFence: e.target.value})}>
+                      <option value="No">No</option>
+                      <option value="Yes">Yes</option>
+                    </select>
+                  </div>
+                  <div className="form-item">
+                    <label>Fence name</label>
+                    <select value={form.fenceName} onChange={e => setForm({...form, fenceName: e.target.value})}>
+                      <option value="">Please choose</option>
+                    </select>
+                  </div>
+                  <div className="form-item">
+                    <label>Fence alarm</label>
+                    <select value={form.fenceAlarm} onChange={e => setForm({...form, fenceAlarm: e.target.value})}>
+                      <option value="No">No</option>
+                      <option value="Yes">Yes</option>
+                    </select>
+                  </div>
+                  <div className="form-item">
+                    <label>Hardware serial number</label>
+                    <input type="text" value={form.hardwareSerial} onChange={e => setForm({...form, hardwareSerial: e.target.value})} />
+                  </div>
+                  <div className="form-item">
+                    <label>Device serial number</label>
+                    <input type="text" value={form.deviceSerial} onChange={e => setForm({...form, deviceSerial: e.target.value})} />
+                  </div>
+                  <div className="form-item">
+                    <label>Hardware version number</label>
+                    <input type="text" value={form.hardwareVersion} onChange={e => setForm({...form, hardwareVersion: e.target.value})} />
+                  </div>
+                  <div className="form-item">
+                    <label>Software version number</label>
+                    <input type="text" value={form.softwareVersion} onChange={e => setForm({...form, softwareVersion: e.target.value})} />
+                  </div>
+                  <div className="form-item">
+                    <label>Intelligent analysis</label>
+                    <input type="text" value={form.intelligentAnalysis} onChange={e => setForm({...form, intelligentAnalysis: e.target.value})} />
+                  </div>
                 </div>
               </div>
               <div className="modal-footer">
-                <button type="button" className="cancel-btn" onClick={() => setShowModal(false)}>Close</button>
-                <button type="submit" className="submit-btn">{editingDevice ? "Apply Overrides" : "Initialize Unit"}</button>
+                <button type="submit" className="save-btn">Confirm</button>
+                <button type="button" className="cancel-btn" onClick={() => setShowModal(false)}>Cancel</button>
               </div>
             </form>
           </div>
