@@ -88,7 +88,7 @@ const DeviceManagement = () => {
     }
   };
 
-  // Helper utility to launch raw media player stream window links securely
+  // Click handler to open the streaming link safely in a new window
   const handleWatchStream = (url) => {
     if (url) {
       window.open(url, "_blank", "noopener,noreferrer");
@@ -130,7 +130,7 @@ const DeviceManagement = () => {
                     <small className="server-tag">{dev.videoServer}</small>
                     {activeStream && (
                       <button 
-                        className="inline-watch-btn" 
+                        className="inline-watch-btn"
                         onClick={() => handleWatchStream(activeStream)}
                         style={{ marginLeft: "8px", fontSize: "11px", padding: "2px 6px", cursor: "pointer" }}
                       >
@@ -145,7 +145,7 @@ const DeviceManagement = () => {
                     </span>
                   </td>
                   <td>
-                    {/* Patched conditional to support both streamUrl and streamEndpoint tracking payloads as interactive hyperlinks */}
+                    {/* Patched conditional to support both streamUrl and streamEndpoint tracking payloads */}
                     <span className={activeStream ? "stream-ok" : "stream-none"}>
                       {activeStream ? (
                         <a 
@@ -220,14 +220,18 @@ const DeviceManagement = () => {
 
                 <div className="input-group full-width">
                   <label>Live Stream Watch URL (Automated Feed Field)</label>
-                  {/* Dual parsing logic handles either string fallback layout and wraps an action trigger right beside it */}
+                  {/* Container wrapping input input field and open action button side by side */}
                   <div style={{ display: "flex", gap: "8px" }}>
                     <input 
-                      className="read-only-input"
-                      readOnly
+                      className="editable-stream-input"
                       style={{ flex: 1 }}
-                      placeholder={(form.streamUrl || form.streamEndpoint) ? "" : "No active pipeline—waiting for hardware unit broadcast signal..."}
-                      value={form.streamUrl || form.streamEndpoint || ""} 
+                      placeholder="Input streaming endpoint link directly (e.g., rtsp://... or https://...)"
+                      value={form.streamUrl || ""} 
+                      onChange={(e) => setForm({
+                        ...form, 
+                        streamUrl: e.target.value, 
+                        streamEndpoint: e.target.value // Dual-key structure fallback updates concurrently 
+                      })} 
                     />
                     {(form.streamUrl || form.streamEndpoint) && (
                       <button 
