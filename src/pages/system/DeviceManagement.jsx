@@ -88,6 +88,13 @@ const DeviceManagement = () => {
     }
   };
 
+  // Helper utility to launch raw media player stream window links securely
+  const handleWatchStream = (url) => {
+    if (url) {
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+  };
+
   return (
     <div className="device-mgmt-container">
       <div className="device-mgmt-header">
@@ -113,29 +120,55 @@ const DeviceManagement = () => {
           <tbody>
             {loading ? (
               <tr><td colSpan="6" className="loading-cell">Syncing database matrix channels...</td></tr>
-            ) : devices.map((dev) => (
-              <tr key={dev._id}>
-                <td><code>{dev.deviceId}</code></td>
-                <td><strong>{dev.deviceName}</strong></td>
-                <td><small className="server-tag">{dev.videoServer}</small></td>
-                <td>
-                  {/* Dynamic Status Badging mirroring our backend hooks updates */}
-                  <span className={`status-badge ${dev.status?.toLowerCase() || 'offline'}`}>
-                    {dev.status || "Offline"}
-                  </span>
-                </td>
-                <td>
-                  {/* Patched conditional to support both streamUrl and streamEndpoint tracking payloads */}
-                  <span className={(dev.streamUrl || dev.streamEndpoint) ? "stream-ok" : "stream-none"}>
-                    {(dev.streamUrl || dev.streamEndpoint) ? "📡 Active Broadcast" : "Idle"}
-                  </span>
-                </td>
-                <td>
-                  <button className="edit-link" onClick={() => handleOpenModal(dev)}>Configure</button>
-                  <button className="delete-link" onClick={() => handleDelete(dev._id)}>Wipe</button>
-                </td>
-              </tr>
-            ))}
+            ) : devices.map((dev) => {
+              const activeStream = dev.streamUrl || dev.streamEndpoint;
+              return (
+                <tr key={dev._id}>
+                  <td><code>{dev.deviceId}</code></td>
+                  <td><strong>{dev.deviceName}</strong></td>
+                  <td>
+                    <small className="server-tag">{dev.videoServer}</small>
+                    {activeStream && (
+                      <button 
+                        className="inline-watch-btn" 
+                        onClick={() => handleWatchStream(activeStream)}
+                        style={{ marginLeft: "8px", fontSize: "11px", padding: "2px 6px", cursor: "pointer" }}
+                      >
+                        📺 Watch
+                      </button>
+                    )}
+                  </td>
+                  <td>
+                    {/* Dynamic Status Badging mirroring our backend hooks updates */}
+                    <span className={`status-badge ${dev.status?.toLowerCase() || 'offline'}`}>
+                      {dev.status || "Offline"}
+                    </span>
+                  </td>
+                  <td>
+                    {/* Patched conditional to support both streamUrl and streamEndpoint tracking payloads as interactive hyperlinks */}
+                    <span className={activeStream ? "stream-ok" : "stream-none"}>
+                      {activeStream ? (
+                        <a 
+                          href={activeStream} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="active-stream-link"
+                          style={{ fontWeight: "bold", textDecoration: "underline", color: "#00ff66" }}
+                        >
+                          📡 Active Broadcast
+                        </a>
+                      ) : (
+                        "Idle"
+                      )}
+                    </span>
+                  </td>
+                  <td>
+                    <button className="edit-link" onClick={() => handleOpenModal(dev)}>Configure</button>
+                    <button className="delete-link" onClick={() => handleDelete(dev._id)}>Wipe</button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -187,13 +220,26 @@ const DeviceManagement = () => {
 
                 <div className="input-group full-width">
                   <label>Live Stream Watch URL (Automated Feed Field)</label>
-                  {/* Dual parsing logic handles either string fallback so the interface remains reactive */}
-                  <input 
-                    className="read-only-input"
-                    readOnly
-                    placeholder={(form.streamUrl || form.streamEndpoint) ? "" : "No active pipeline—waiting for hardware unit broadcast signal..."}
-                    value={form.streamUrl || form.streamEndpoint || ""} 
-                  />
+                  {/* Dual parsing logic handles either string fallback layout and wraps an action trigger right beside it */}
+                  <div style={{ display: "flex", gap: "8px" }}>
+                    <input 
+                      className="read-only-input"
+                      readOnly
+                      style={{ flex: 1 }}
+                      placeholder={(form.streamUrl || form.streamEndpoint) ? "" : "No active pipeline—waiting for hardware unit broadcast signal..."}
+                      value={form.streamUrl || form.streamEndpoint || ""} 
+                    />
+                    {(form.streamUrl || form.streamEndpoint) && (
+                      <button 
+                        type="button" 
+                        className="modal-pop-link-btn"
+                        style={{ padding: "0 12px", background: "#28a745", color: "white", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "bold" }}
+                        onClick={() => handleWatchStream(form.streamUrl || form.streamEndpoint)}
+                      >
+                        🔗 Open Link
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <div className="input-group">
