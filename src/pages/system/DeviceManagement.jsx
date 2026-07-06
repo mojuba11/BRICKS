@@ -126,18 +126,7 @@ const DeviceManagement = () => {
                 <tr key={dev._id}>
                   <td><code>{dev.deviceId}</code></td>
                   <td><strong>{dev.deviceName}</strong></td>
-                  <td>
-                    <small className="server-tag">{dev.videoServer}</small>
-                    {activeStream && (
-                      <button 
-                        className="inline-watch-btn"
-                        onClick={() => handleWatchStream(activeStream)}
-                        style={{ marginLeft: "8px", fontSize: "11px", padding: "2px 6px", cursor: "pointer" }}
-                      >
-                        📺 Watch
-                      </button>
-                    )}
-                  </td>
+                  <td><small className="server-tag">{dev.videoServer}</small></td>
                   <td>
                     {/* Dynamic Status Badging mirroring our backend hooks updates */}
                     <span className={`status-badge ${dev.status?.toLowerCase() || 'offline'}`}>
@@ -155,7 +144,7 @@ const DeviceManagement = () => {
                           className="active-stream-link"
                           style={{ fontWeight: "bold", textDecoration: "underline", color: "#00ff66" }}
                         >
-                          📡 Active Broadcast
+                          {activeStream}
                         </a>
                       ) : (
                         "Idle"
